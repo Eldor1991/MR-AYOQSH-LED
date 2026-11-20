@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MR Benzin — 3D LED Video Generator</title>
+  <title>MR AYOQSH — 3D LED Video Generator</title>
 
   <!-- Google Fonts: Inter (UI) & Montserrat (Bold 3D LED Typography) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -134,7 +134,7 @@
         </div>
         <div>
           <h1 class="text-base sm:text-lg font-bold tracking-tight text-white flex items-center gap-2">
-            MR Benzin <span class="text-amber-400">3D LED Studio</span>
+            MR AYOQSH <span class="text-amber-400">3D LED Studio</span>
           </h1>
           <p class="text-[11px] sm:text-xs text-slate-400">
             Avtomatik LED ekran video generatori — 3D metall yozuvlar &amp; HD eksport
@@ -142,7 +142,14 @@
         </div>
       </div>
 
-      <div class="flex items-center gap-2">
+      <div class="flex flex-wrap items-center gap-2">
+        <span
+          id="autoSaveBadge"
+          class="px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 flex items-center gap-1.5 transition-all duration-300"
+        >
+          <span id="autoSaveDot" class="w-2 h-2 rounded-full bg-emerald-400"></span>
+          <span id="autoSaveText">Avto-saqlandi</span>
+        </span>
         <span
           id="headerResBadge"
           class="px-3 py-1 rounded-full text-xs font-mono font-semibold bg-amber-500/15 text-amber-300 border border-amber-400/30"
@@ -310,9 +317,9 @@
             <div class="bg-slate-900/75 border border-amber-400/25 rounded-xl p-3">
               <div class="flex items-center justify-between mb-1.5">
                 <label for="logoScaleRange" class="text-xs font-semibold text-amber-200">Logotip rasmi o'lchami</label>
-                <span id="logoScaleVal" class="text-xs font-mono font-bold text-amber-400">100%</span>
+                <span id="logoScaleVal" class="text-xs font-mono font-bold text-amber-400">150%</span>
               </div>
-              <input id="logoScaleRange" type="range" min="40" max="220" step="5" value="100" class="w-full" />
+              <input id="logoScaleRange" type="range" min="40" max="220" step="5" value="150" class="w-full" />
               <p class="text-[10px] text-slate-400 mt-1">Faqat logotip rasmini kattalashtiradi, yozuvlarga ta'sir qilmaydi</p>
             </div>
 
@@ -493,7 +500,7 @@
           </div>
         </section>
 
-        <!-- TAB 4: 3D VA DIZAYN (3D & EXPORT SETTINGS) -->
+        <!-- TAB 4: 3D VA DIZAYN (3D, EXPORT & BACKUP SETTINGS) -->
         <section id="tab-design" class="tab-panel hidden space-y-3.5">
           <!-- 3D Depth Slider -->
           <div class="bg-slate-900/75 border border-studio-border/80 rounded-xl p-3">
@@ -601,6 +608,29 @@
                 class="w-4 h-4 accent-amber-400 rounded cursor-pointer"
               />
             </label>
+          </div>
+
+          <!-- JSON Backup & Restore Card -->
+          <div class="bg-slate-900/75 border border-emerald-500/25 rounded-xl p-3.5 space-y-2.5">
+            <div>
+              <span class="block text-xs font-semibold text-emerald-300">Zaxira nusxa (Backup)</span>
+              <span class="block text-[10px] text-slate-400">Barcha narxlar, o'lchamlar va logotipni faylga saqlash</span>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <button
+                type="button"
+                id="exportJsonBtn"
+                class="px-3 py-2 rounded-xl text-xs font-semibold bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-200 border border-emerald-500/35 transition cursor-pointer text-center"
+              >
+                Sozlamalarni yuklab olish (.json)
+              </button>
+              <label class="cursor-pointer">
+                <span class="block w-full px-3 py-2 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-studio-border transition text-center">
+                  Sozlamalarni yuklash (.json)
+                </span>
+                <input id="importJsonInput" type="file" accept="application/json,.json" class="hidden" />
+              </label>
+            </div>
           </div>
         </section>
 
@@ -747,25 +777,28 @@
       'use strict';
 
       /* =========================================================================
-       * 1. CONSTANTS, DEFAULTS & SAFE LOCALSTORAGE PERSISTENCE
+       * 1. CONSTANTS, DEFAULTS & PERSISTENCE (localStorage + IndexedDB + ./logo.png)
        * ========================================================================= */
-      const STORAGE_KEY = 'mr_benzin_3d_studio_v5';
+      const STORAGE_KEY = 'mr_ayoqsh_3d_studio_v6';
+      const IDB_NAME = 'mr_ayoqsh_db';
+      const IDB_STORE = 'assets';
+      const IDB_LOGO_KEY = 'custom_logo';
       const TOTAL_DURATION = 20.0; // seconds
 
       const DEFAULT_FUELS = [
-        { id: 'f1', name: 'АИ-98', price: 13500, enabled: true },
-        { id: 'f2', name: 'АИ-95', price: 12800, enabled: true },
-        { id: 'f3', name: 'АИ-92', price: 11500, enabled: true },
-        { id: 'f4', name: 'АИ-91', price: 10800, enabled: true },
-        { id: 'f5', name: 'ДТ простой', price: 11200, enabled: true },
-        { id: 'f6', name: 'ДТ евро', price: 12500, enabled: true },
-        { id: 'f7', name: 'Печ. топливо', price: 9800, enabled: true },
+        { id: 'f1', name: 'АИ-98', price: 16000, enabled: true },
+        { id: 'f2', name: 'АИ-95', price: 15500, enabled: true },
+        { id: 'f3', name: 'АИ-92', price: 13000, enabled: true },
+        { id: 'f4', name: 'АИ-91', price: 14000, enabled: true },
+        { id: 'f5', name: 'ДТ евро', price: 14500, enabled: true },
+        { id: 'f6', name: 'ДТ простой', price: 13500, enabled: true },
+        { id: 'f7', name: 'Печ. топливо', price: 9000, enabled: true },
       ];
 
-      // Completely decoupled size sliders: logoScale ONLY scales logo graphic;
-      // brandTextScale ONLY scales Brand Name & Brand Subtitle!
+      // Completely decoupled size sliders:
+      // logoScale ONLY scales logo graphic; brandTextScale ONLY scales Brand Name & Brand Subtitle
       const DEFAULT_SIZES = {
-        logoScale: 100,
+        logoScale: 150,
         brandTextScale: 100,
         introScale: 100,
         introSubScale: 100,
@@ -781,8 +814,8 @@
         texts: {
           introTitle: 'XUSH KELIBSIZ!',
           introSub: "QULAY NARXLARDA SIFATLI VA TOZA YOQILG'I",
-          brandName: 'MR BENZIN',
-          brandSub: "SIFATLI YOQILG'I MARKAZI",
+          brandName: 'MR AYOQSH',
+          brandSub: "PREMIUM YOQILG'I",
           priceHeader: "YOQILG'I NARXLARI",
           footerUnit: "so'm / litr",
         },
@@ -795,7 +828,6 @@
           fps: 60,
           supersample: true,
         },
-        logoDataUrl: null,
       };
 
       const THEMES = {
@@ -850,66 +882,122 @@
         return Math.max(min, Math.min(max, n));
       }
 
-      function loadState() {
+      function sanitizeState(parsed) {
+        const mergedSizes = { ...DEFAULT_SIZES, ...(parsed?.sizes || {}) };
+        mergedSizes.logoScale = clampInt(mergedSizes.logoScale, 40, 220);
+        mergedSizes.brandTextScale = clampInt(mergedSizes.brandTextScale, 50, 200);
+        mergedSizes.introScale = clampInt(mergedSizes.introScale, 50, 200);
+        mergedSizes.introSubScale = clampInt(mergedSizes.introSubScale, 50, 200);
+        mergedSizes.fuelLabelScale = clampInt(mergedSizes.fuelLabelScale, 50, 200);
+        mergedSizes.priceScale = clampInt(mergedSizes.priceScale, 50, 200);
+        mergedSizes.rowSpacing = clampInt(mergedSizes.rowSpacing, 70, 140);
+
+        return {
+          resolution: {
+            width: clampInt(parsed?.resolution?.width ?? 400, 160, 2160),
+            height: clampInt(parsed?.resolution?.height ?? 880, 160, 2160),
+          },
+          sizes: mergedSizes,
+          fuels:
+            Array.isArray(parsed?.fuels) && parsed.fuels.length > 0
+              ? parsed.fuels.map((f, i) => ({
+                  id: f.id || `f_${i}`,
+                  name: String(f.name ?? ''),
+                  price: Math.max(0, Number(f.price) || 0),
+                  enabled: f.enabled !== false,
+                }))
+              : DEFAULT_FUELS.map((f) => ({ ...f })),
+          texts: { ...DEFAULT_STATE.texts, ...(parsed?.texts || {}) },
+          showLogoInIntro: parsed?.showLogoInIntro !== false,
+          fx: {
+            ...DEFAULT_STATE.fx,
+            ...(parsed?.fx || {}),
+            shineEnabled: parsed?.fx?.shineEnabled !== false,
+          },
+        };
+      }
+
+      function loadStateFromLocalStorage() {
         try {
           const raw = localStorage.getItem(STORAGE_KEY);
           if (!raw) return deepClone(DEFAULT_STATE);
-          const parsed = JSON.parse(raw);
-
-          const mergedSizes = { ...DEFAULT_SIZES, ...(parsed?.sizes || {}) };
-          mergedSizes.logoScale = clampInt(mergedSizes.logoScale, 40, 220);
-          mergedSizes.brandTextScale = clampInt(mergedSizes.brandTextScale, 50, 200);
-          mergedSizes.introScale = clampInt(mergedSizes.introScale, 50, 200);
-          mergedSizes.introSubScale = clampInt(mergedSizes.introSubScale, 50, 200);
-          mergedSizes.fuelLabelScale = clampInt(mergedSizes.fuelLabelScale, 50, 200);
-          mergedSizes.priceScale = clampInt(mergedSizes.priceScale, 50, 200);
-          mergedSizes.rowSpacing = clampInt(mergedSizes.rowSpacing, 70, 140);
-
-          return {
-            resolution: {
-              width: clampInt(parsed?.resolution?.width ?? 400, 160, 2160),
-              height: clampInt(parsed?.resolution?.height ?? 880, 160, 2160),
-            },
-            sizes: mergedSizes,
-            fuels:
-              Array.isArray(parsed?.fuels) && parsed.fuels.length > 0
-                ? parsed.fuels.map((f, i) => ({
-                    id: f.id || `f_${i}`,
-                    name: String(f.name ?? ''),
-                    price: Math.max(0, Number(f.price) || 0),
-                    enabled: f.enabled !== false,
-                  }))
-                : DEFAULT_FUELS.map((f) => ({ ...f })),
-            texts: { ...DEFAULT_STATE.texts, ...(parsed?.texts || {}) },
-            showLogoInIntro: parsed?.showLogoInIntro !== false,
-            fx: {
-              ...DEFAULT_STATE.fx,
-              ...(parsed?.fx || {}),
-              shineEnabled: parsed?.fx?.shineEnabled !== false,
-            },
-            logoDataUrl: typeof parsed?.logoDataUrl === 'string' ? parsed.logoDataUrl : null,
-          };
+          return sanitizeState(JSON.parse(raw));
         } catch (err) {
           console.warn('localStorage load failed, using defaults:', err);
           return deepClone(DEFAULT_STATE);
         }
       }
 
-      function saveState() {
+      /* --- IndexedDB Helper for Large Custom Logos --- */
+      function openLogoDB() {
+        return new Promise((resolve, reject) => {
+          if (typeof indexedDB === 'undefined') {
+            reject(new Error('IndexedDB unavailable'));
+            return;
+          }
+          const req = indexedDB.open(IDB_NAME, 1);
+          req.onupgradeneeded = (e) => {
+            const db = e.target.result;
+            if (!db.objectStoreNames.contains(IDB_STORE)) {
+              db.createObjectStore(IDB_STORE);
+            }
+          };
+          req.onsuccess = () => resolve(req.result);
+          req.onerror = () => reject(req.error);
+        });
+      }
+
+      async function saveLogoToIDB(dataUrl) {
         try {
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+          const db = await openLogoDB();
+          await new Promise((resolve, reject) => {
+            const tx = db.transaction(IDB_STORE, 'readwrite');
+            const store = tx.objectStore(IDB_STORE);
+            if (dataUrl) {
+              store.put(dataUrl, IDB_LOGO_KEY);
+            } else {
+              store.delete(IDB_LOGO_KEY);
+            }
+            tx.oncomplete = () => resolve();
+            tx.onerror = () => reject(tx.error);
+          });
+          db.close();
         } catch (err) {
-          console.warn('localStorage save failed:', err);
+          console.warn('IndexedDB logo save failed:', err);
         }
       }
 
-      let state = loadState();
+      async function loadLogoFromIDB() {
+        try {
+          const db = await openLogoDB();
+          const result = await new Promise((resolve, reject) => {
+            const tx = db.transaction(IDB_STORE, 'readonly');
+            const store = tx.objectStore(IDB_STORE);
+            const req = store.get(IDB_LOGO_KEY);
+            req.onsuccess = () => resolve(typeof req.result === 'string' ? req.result : null);
+            req.onerror = () => reject(req.error);
+          });
+          db.close();
+          return result;
+        } catch (err) {
+          console.warn('IndexedDB logo load failed:', err);
+          return null;
+        }
+      }
+
+      let state = loadStateFromLocalStorage();
+      let currentLogoDataUrl = null; // Stored in IndexedDB (not localStorage)
+      let customLogoImg = null;
+      let isUsingStaticRepoLogo = false;
 
       /* =========================================================================
        * 2. DOM REFERENCES
        * ========================================================================= */
       const toastBanner = document.getElementById('toastBanner');
       const toastText = document.getElementById('toastText');
+      const autoSaveBadge = document.getElementById('autoSaveBadge');
+      const autoSaveDot = document.getElementById('autoSaveDot');
+      const autoSaveText = document.getElementById('autoSaveText');
       const headerResBadge = document.getElementById('headerResBadge');
       const headerFpsBadge = document.getElementById('headerFpsBadge');
 
@@ -955,7 +1043,7 @@
       const removeLogoBtn = document.getElementById('removeLogoBtn');
       const logoPreviewBox = document.getElementById('logoPreviewBox');
 
-      // Tab 4: 3D & Design
+      // Tab 4: 3D, Design & Backup
       const depthRange = document.getElementById('depthRange');
       const depthVal = document.getElementById('depthVal');
       const shineEnabledCheckbox = document.getElementById('shineEnabledCheckbox');
@@ -964,6 +1052,8 @@
       const themeBtns = document.querySelectorAll('.theme-btn');
       const fpsBtns = document.querySelectorAll('.fps-btn');
       const supersampleCheckbox = document.getElementById('supersampleCheckbox');
+      const exportJsonBtn = document.getElementById('exportJsonBtn');
+      const importJsonInput = document.getElementById('importJsonInput');
 
       // Preview & Playback
       const previewCanvas = document.getElementById('previewCanvas');
@@ -991,16 +1081,31 @@
       const exportProgressBar = document.getElementById('exportProgressBar');
 
       /* =========================================================================
-       * 3. OFFSCREEN CANVASES (2x SUPERSAMPLING + 3D TEXT SCRATCH)
+       * 3. SAVE INDICATOR & TOAST HELPERS
        * ========================================================================= */
-      const renderCanvas = document.createElement('canvas');
-      const renderCtx = renderCanvas.getContext('2d', { alpha: false });
-
-      const textScratchCanvas = document.createElement('canvas');
-      const textScratchCtx = textScratchCanvas.getContext('2d');
-
-      let customLogoImg = null;
+      let savePulseTimer = null;
       let toastTimer = null;
+
+      function pulseAutoSaveBadge() {
+        autoSaveText.textContent = 'Saqlandi ✓';
+        autoSaveBadge.classList.add('bg-emerald-500/30', 'border-emerald-400');
+        autoSaveDot.classList.add('animate-ping');
+        clearTimeout(savePulseTimer);
+        savePulseTimer = setTimeout(() => {
+          autoSaveText.textContent = 'Avto-saqlandi';
+          autoSaveBadge.classList.remove('bg-emerald-500/30', 'border-emerald-400');
+          autoSaveDot.classList.remove('animate-ping');
+        }, 1100);
+      }
+
+      function saveState() {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+          pulseAutoSaveBadge();
+        } catch (err) {
+          console.warn('localStorage save failed:', err);
+        }
+      }
 
       function showToast(msg) {
         toastText.textContent = msg;
@@ -1014,7 +1119,16 @@
       }
 
       /* =========================================================================
-       * 4. MATH, EASING & FORMAT HELPERS
+       * 4. OFFSCREEN CANVASES (2x SUPERSAMPLING + 3D TEXT SCRATCH)
+       * ========================================================================= */
+      const renderCanvas = document.createElement('canvas');
+      const renderCtx = renderCanvas.getContext('2d', { alpha: false });
+
+      const textScratchCanvas = document.createElement('canvas');
+      const textScratchCtx = textScratchCanvas.getContext('2d');
+
+      /* =========================================================================
+       * 5. MATH, EASING & FORMAT HELPERS
        * ========================================================================= */
       function clamp01(v) {
         return v < 0 ? 0 : v > 1 ? 1 : v;
@@ -1051,7 +1165,7 @@
       }
 
       /* =========================================================================
-       * 5. STARFIELD PARTICLES
+       * 6. STARFIELD PARTICLES
        * ========================================================================= */
       const STARS = [];
       (function initStars() {
@@ -1075,7 +1189,7 @@
       })();
 
       /* =========================================================================
-       * 6. CANVAS RESOLUTION & RESPONSIVE DISPLAY SIZING
+       * 7. CANVAS RESOLUTION & RESPONSIVE DISPLAY SIZING
        * ========================================================================= */
       function syncCanvasDimensions() {
         const W = state.resolution.width;
@@ -1106,12 +1220,8 @@
       }
 
       /* =========================================================================
-       * 7. 3D METALLIC TEXT ENGINE & MULTI-LINE WORD-WRAPPER
+       * 8. 3D METALLIC TEXT ENGINE & MULTI-LINE WORD-WRAPPER
        * ========================================================================= */
-
-      /**
-       * Wraps text by explicit newlines ('\n') and word boundaries within maxWidth.
-       */
       function wrapText(ctx, text, maxWidth) {
         if (!text) return [];
         const paragraphs = String(text).split(/\r?\n/);
@@ -1141,10 +1251,6 @@
         return lines;
       }
 
-      /**
-       * Renders a single line of 3D extruded metallic text (Gold or Silver)
-       * with dark shadow, bevel edge highlight, and animated diagonal specular sheen.
-       */
       function draw3DText(ctx, text, x, y, opts = {}) {
         if (!text) return;
         const W = state.resolution.width;
@@ -1303,7 +1409,6 @@
 
         sctx.restore();
 
-        // Blit scratch onto main canvas
         ctx.translate(x, y);
         ctx.scale(scale, scale);
         ctx.globalAlpha = clamp01(alpha);
@@ -1321,9 +1426,6 @@
         ctx.restore();
       }
 
-      /**
-       * Measures a wrapped multi-line 3D text block without shrinking the font size.
-       */
       function measureMultiline3DBlock(ctx, text, opts = {}) {
         const W = state.resolution.width;
         const H = state.resolution.height;
@@ -1347,9 +1449,6 @@
         return { lines, fontSize, lineHeight, totalHeight };
       }
 
-      /**
-       * Draws a vertically-centered multi-line 3D text block.
-       */
       function draw3DMultilineText(ctx, text, x, centerY, opts = {}) {
         const layout = opts._layout || measureMultiline3DBlock(ctx, text, opts);
         const { lines, fontSize, lineHeight, totalHeight } = layout;
@@ -1377,7 +1476,7 @@
       }
 
       /* =========================================================================
-       * 8. BACKGROUND, GOLDEN FRAME & 3D VECTOR / PNG LOGO RENDERERS
+       * 9. BACKGROUND, GOLDEN FRAME & 3D VECTOR / PNG LOGO RENDERERS
        * ========================================================================= */
       function drawBackground(ctx, t, W, H, uScale) {
         const th = THEMES[state.fx.theme] || THEMES.royal;
@@ -1526,10 +1625,6 @@
         ctx.restore();
       }
 
-      /**
-       * Returns the exact rendered pixel dimensions of the logo at a given scaleFactor
-       * (accounting for custom PNG aspect ratio or default 112px vector emblem).
-       */
       function getLogoRenderedHeight(scaleFactor) {
         if (customLogoImg && customLogoImg.complete && customLogoImg.naturalWidth > 0) {
           const maxBox = 122;
@@ -1539,10 +1634,6 @@
         return 112 * scaleFactor;
       }
 
-      /**
-       * Draws uploaded PNG/SVG logo or a crisp 3D metallic gold shield + fuel droplet emblem.
-       * Note: Also clamps horizontal width cleanly inside safeMaxW if needed.
-       */
       function drawLogo(ctx, cx, cy, scaleFactor, alpha, flareAlpha = 0, safeMaxW = null) {
         if (alpha <= 0.005) return;
 
@@ -1564,7 +1655,6 @@
         ctx.scale(finalScale, finalScale);
         ctx.globalAlpha = clamp01(alpha);
 
-        // Optional golden lens flare behind logo
         if (flareAlpha > 0.02) {
           const flareR = 96;
           const fg = ctx.createRadialGradient(0, 0, 0, 0, 0, flareR);
@@ -1655,10 +1745,7 @@
       }
 
       /* =========================================================================
-       * 9. MAIN 20-SECOND CHOREOGRAPHY
-       *    - Scene 1 (0.0s – 4.5s): Optional Logo + 3D Intro Title + Divider + Subtitle
-       *    - Scene 2 (4.5s – 9.0s): Logo Reveal + 3D Brand Name + Brand Subtitle
-       *    - Scene 3 (9.0s – 20.0s): Header Logo + Price Header + Rolling Fuel Prices
+       * 10. MAIN 20-SECOND CHOREOGRAPHY
        * ========================================================================= */
       function renderFrame(t) {
         const W = state.resolution.width;
@@ -1675,9 +1762,8 @@
         const leftX = (W - contentW) / 2;
         const rightX = leftX + contentW;
 
-        // Completely decoupled multipliers!
-        const logoImgMul = state.sizes.logoScale / 100;       // ONLY scales logo graphic
-        const brandTextMul = state.sizes.brandTextScale / 100; // ONLY scales Brand Name & Brand Subtitle
+        const logoImgMul = state.sizes.logoScale / 100;
+        const brandTextMul = state.sizes.brandTextScale / 100;
         const introMul = state.sizes.introScale / 100;
         const introSubMul = state.sizes.introSubScale / 100;
         const labelMul = state.sizes.fuelLabelScale / 100;
@@ -1688,13 +1774,11 @@
         ctx.save();
         ctx.setTransform(ss, 0, 0, ss, 0, 0);
 
-        // 1. Background & Golden Border
         drawBackground(ctx, t, W, H, uScale);
         drawGoldenFrame(ctx, t, W, H, uScale);
 
         // ---------------------------------------------------------------------
         // SCENE 1: INTRO (0.0s – 4.5s)
-        // Dynamically centers: [Optional Logo] + Intro Title + Divider + Subtitle
         // ---------------------------------------------------------------------
         const introFadeOut = 1 - easeInOutCubic(progress(t, 3.85, 4.5));
         if (introFadeOut > 0.008 && t < 4.6) {
@@ -1718,7 +1802,6 @@
           const hasSub = subLayout.lines.length > 0;
           const showIntroLogo = !!state.showLogoInIntro;
 
-          // Compute exact logo height (clamped if width hits safeLogoMaxW)
           const introLogoBaseScale = uScale * logoImgMul * 0.9;
           const introLogoH = showIntroLogo
             ? Math.min(getLogoRenderedHeight(introLogoBaseScale), H * 0.36)
@@ -1738,7 +1821,6 @@
 
           let cursorY = blockTopY;
 
-          // 1A. Optional Intro Logo above Title
           if (showIntroLogo) {
             const introLogoCenterY = cursorY + introLogoH / 2;
             const logoP = progress(t, 0.1, 0.9);
@@ -1758,7 +1840,6 @@
             cursorY += introLogoH + logoToTitleGap;
           }
 
-          // 1B. Multi-line 3D Gold Intro Title
           const titleCenterY = cursorY + titleLayout.totalHeight / 2;
           const titleP = progress(t, 0.35, 1.2);
           if (hasTitle && titleP > 0) {
@@ -1776,7 +1857,6 @@
           }
           cursorY += titleLayout.totalHeight;
 
-          // 1C. Glowing Golden Divider Line
           const dividerY = cursorY + dividerGap;
           const divP = easeOutCubic(progress(t, 0.85, 1.55));
           if (hasTitle && hasSub && divP > 0) {
@@ -1798,7 +1878,6 @@
             ctx.restore();
           }
 
-          // 1D. Multi-line 3D Silver Intro Subtitle
           const subCenterY = dividerY + dividerGap + subLayout.totalHeight / 2;
           const subP = easeOutCubic(progress(t, 1.15, 1.95));
           if (hasSub && subP > 0) {
@@ -1816,7 +1895,6 @@
 
         // ---------------------------------------------------------------------
         // SCENE 2: BRAND / LOGO REVEAL (4.5s – 9.0s) & GLIDE TO HEADER
-        // logoImgMul ONLY scales Logo; brandTextMul ONLY scales Brand texts!
         // ---------------------------------------------------------------------
         if (t >= 4.35) {
           const logoInP = easeOutCubic(progress(t, 4.5, 5.45));
@@ -1852,7 +1930,6 @@
           const headerLogoY = H * 0.088;
           const logoY = startLogoY + (headerLogoY - startLogoY) * glideP;
 
-          // Keep header logo neatly proportioned during Scene 3 even if logoScale is very large
           const headerTargetScale = uScale * Math.min(logoImgMul, 1.35) * 0.56;
           const revealScale = brandLogoBaseScale * (0.76 + 0.24 * easeOutBack(logoInP));
           const currentLogoScale = revealScale + (headerTargetScale - revealScale) * glideP;
@@ -1900,7 +1977,6 @@
         if (t >= 8.75) {
           const th = THEMES[state.fx.theme] || THEMES.royal;
 
-          // Price Header ("YOQILG'I NARXLARI") — completely independent of logoScale!
           const headerP = progress(t, 8.95, 9.6);
           if (headerP > 0) {
             const headerEase = easeOutCubic(headerP);
@@ -1917,7 +1993,6 @@
             });
           }
 
-          // Active Fuel Rows
           const activeFuels = state.fuels.filter((f) => f.enabled);
           const count = activeFuels.length;
 
@@ -1947,7 +2022,6 @@
               const slideY = (1 - appearP) * 16 * uScale;
               const cy = y + slideY;
 
-              // Glassmorphism + Gold-Accented Row Card
               ctx.save();
               ctx.globalAlpha = appearP;
               roundedRectPath(ctx, leftX, cy - cardH / 2, contentW, cardH, cardRadius);
@@ -1962,14 +2036,12 @@
               ctx.lineWidth = Math.max(1, 1.3 * uScale);
               ctx.stroke();
 
-              // Left Gold Accent Bar
               const barH = cardH * 0.54;
               roundedRectPath(ctx, leftX + 4 * uScale, cy - barH / 2, 3.2 * uScale, barH, 2 * uScale);
               ctx.fillStyle = '#f5b82e';
               ctx.fill();
               ctx.restore();
 
-              // Smooth Number Counter Roll-up
               const rollP = easeOutCubic(progress(t, rowStart, rowStart + 0.95));
               const targetPrice = Math.max(0, Number(fuel.price) || 0);
               let shownPrice = targetPrice;
@@ -1978,7 +2050,6 @@
                 shownPrice = targetPrice >= 1000 ? Math.round(rawVal / 100) * 100 : Math.round(rawVal);
               }
 
-              // Periodic diagonal sheen cascade
               let priceShine = -1;
               let labelShine = -1;
               if (t >= 12.6) {
@@ -1989,7 +2060,6 @@
                 if (labelT >= 0 && labelT <= 0.75) labelShine = labelT / 0.75;
               }
 
-              // Left: 3D Metallic Silver Fuel Name
               draw3DText(ctx, fuel.name || '', leftX + innerPadX, cy, {
                 maxWidth: contentW * 0.48,
                 baseSize: defaultLabelPx,
@@ -2001,7 +2071,6 @@
                 shineCycle: labelShine,
               });
 
-              // Right: 3D Metallic Gold Price
               draw3DText(ctx, formatPrice(shownPrice), rightX - innerPadX, cy, {
                 maxWidth: contentW * 0.44,
                 baseSize: defaultPricePx,
@@ -2015,7 +2084,6 @@
             });
           }
 
-          // Footer ("so'm / litr")
           const footerP = easeOutCubic(progress(t, 11.8, 12.6));
           if (footerP > 0) {
             draw3DText(ctx, state.texts.footerUnit || '', W / 2, H * 0.955, {
@@ -2032,7 +2100,6 @@
 
         ctx.restore();
 
-        // Downscale 2x supersampled buffer cleanly to exact target W×H
         previewCtx.imageSmoothingEnabled = true;
         previewCtx.imageSmoothingQuality = 'high';
         previewCtx.clearRect(0, 0, W, H);
@@ -2040,7 +2107,71 @@
       }
 
       /* =========================================================================
-       * 10. UI BUILDERS & EVENT BINDINGS
+       * 11. LOGO LOADING (IndexedDB -> ./logo.png -> Built-in Vector Emblem)
+       * ========================================================================= */
+      function setLogoPreviewThumbnail(src, showRemoveBtn) {
+        if (src) {
+          logoPreviewBox.innerHTML = '';
+          const thumb = document.createElement('img');
+          thumb.src = src;
+          thumb.alt = 'Logo';
+          thumb.className = 'w-full h-full object-contain p-1';
+          logoPreviewBox.appendChild(thumb);
+          removeLogoBtn.classList.toggle('hidden', !showRemoveBtn);
+        } else {
+          logoPreviewBox.innerHTML =
+            '<span class="text-[10px] text-slate-500 text-center px-1">Standart emblema</span>';
+          removeLogoBtn.classList.add('hidden');
+        }
+      }
+
+      function applyLogoImage(dataUrl, allowRepoFallback = true) {
+        if (dataUrl) {
+          currentLogoDataUrl = dataUrl;
+          isUsingStaticRepoLogo = false;
+          const img = new Image();
+          img.onload = () => {
+            customLogoImg = img;
+            setLogoPreviewThumbnail(dataUrl, true);
+            renderFrame(currentTime);
+          };
+          img.onerror = () => {
+            customLogoImg = null;
+            setLogoPreviewThumbnail(null, false);
+            renderFrame(currentTime);
+          };
+          img.src = dataUrl;
+          return;
+        }
+
+        currentLogoDataUrl = null;
+        customLogoImg = null;
+        isUsingStaticRepoLogo = false;
+        setLogoPreviewThumbnail(null, false);
+
+        if (allowRepoFallback) {
+          const repoImg = new Image();
+          repoImg.crossOrigin = 'anonymous';
+          repoImg.onload = () => {
+            if (!currentLogoDataUrl) {
+              customLogoImg = repoImg;
+              isUsingStaticRepoLogo = true;
+              setLogoPreviewThumbnail('./logo.png', false);
+              renderFrame(currentTime);
+            }
+          };
+          repoImg.onerror = () => {
+            // Gracefully fall back to built-in 3D gold shield emblem
+            renderFrame(currentTime);
+          };
+          repoImg.src = './logo.png';
+        } else {
+          renderFrame(currentTime);
+        }
+      }
+
+      /* =========================================================================
+       * 12. UI BUILDERS & EVENT BINDINGS
        * ========================================================================= */
       function renderFuelListUI() {
         fuelListContainer.innerHTML = '';
@@ -2113,32 +2244,10 @@
         });
       }
 
-      function syncLogoUI() {
-        if (state.logoDataUrl) {
-          customLogoImg = new Image();
-          customLogoImg.onload = () => renderFrame(currentTime);
-          customLogoImg.src = state.logoDataUrl;
-
-          logoPreviewBox.innerHTML = '';
-          const thumb = document.createElement('img');
-          thumb.src = state.logoDataUrl;
-          thumb.alt = 'Logo';
-          thumb.className = 'w-full h-full object-contain p-1';
-          logoPreviewBox.appendChild(thumb);
-          removeLogoBtn.classList.remove('hidden');
-        } else {
-          customLogoImg = null;
-          logoPreviewBox.innerHTML =
-            '<span class="text-[10px] text-slate-500 text-center px-1">Standart emblema</span>';
-          removeLogoBtn.classList.add('hidden');
-        }
-      }
-
       function syncAllControlsFromState() {
         videoWidthInput.value = state.resolution.width;
         videoHeightInput.value = state.resolution.height;
 
-        // 7 Independent Sliders
         logoScaleRange.value = state.sizes.logoScale;
         logoScaleVal.textContent = `${state.sizes.logoScale}%`;
         brandTextScaleRange.value = state.sizes.brandTextScale;
@@ -2154,7 +2263,6 @@
         rowSpacingRange.value = state.sizes.rowSpacing;
         rowSpacingVal.textContent = `${state.sizes.rowSpacing}%`;
 
-        // Texts & Intro Logo Toggle
         showLogoInIntroCheckbox.checked = !!state.showLogoInIntro;
         introTitleInput.value = state.texts.introTitle;
         introSubInput.value = state.texts.introSub;
@@ -2163,7 +2271,6 @@
         priceHeaderInput.value = state.texts.priceHeader;
         footerUnitInput.value = state.texts.footerUnit;
 
-        // 3D & Design
         depthRange.value = state.fx.depth;
         depthVal.textContent = `${state.fx.depth} px`;
         shineEnabledCheckbox.checked = !!state.fx.shineEnabled;
@@ -2190,7 +2297,6 @@
         });
 
         renderFuelListUI();
-        syncLogoUI();
         syncCanvasDimensions();
       }
 
@@ -2263,7 +2369,7 @@
         });
       });
 
-      // All 7 Independent Sliders
+      // 7 Independent Sliders
       [
         [logoScaleRange, logoScaleVal, 'logoScale'],
         [brandTextScaleRange, brandTextScaleVal, 'brandTextScale'],
@@ -2312,28 +2418,27 @@
         });
       });
 
-      // Logo Upload & Remove
+      // Logo Upload & Remove (IndexedDB)
       logoFileInput.addEventListener('change', (e) => {
         const file = e.target.files?.[0];
         if (!file) return;
         const reader = new FileReader();
-        reader.onload = () => {
-          state.logoDataUrl = reader.result;
-          saveState();
-          syncLogoUI();
-          renderFrame(currentTime);
-          showToast('Logotip muvaffaqiyatli yuklandi');
+        reader.onload = async () => {
+          const dataUrl = reader.result;
+          await saveLogoToIDB(dataUrl);
+          applyLogoImage(dataUrl, false);
+          pulseAutoSaveBadge();
+          showToast('Logotip yuklandi va xotiraga saqlandi');
         };
         reader.readAsDataURL(file);
         logoFileInput.value = '';
       });
 
-      removeLogoBtn.addEventListener('click', () => {
-        state.logoDataUrl = null;
-        saveState();
-        syncLogoUI();
-        renderFrame(currentTime);
-        showToast("Logotip o'chirildi (standart emblema)");
+      removeLogoBtn.addEventListener('click', async () => {
+        await saveLogoToIDB(null);
+        applyLogoImage(null, true);
+        pulseAutoSaveBadge();
+        showToast("Yuklangan logotip o'chirildi");
       });
 
       // 3D & Design Controls
@@ -2381,10 +2486,62 @@
         renderFrame(currentTime);
       });
 
+      // JSON Backup Export & Import
+      exportJsonBtn.addEventListener('click', () => {
+        try {
+          const payload = {
+            version: 6,
+            exportedAt: new Date().toISOString(),
+            state: deepClone(state),
+            logoDataUrl: currentLogoDataUrl || null,
+          };
+          const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `MR_AYOQSH_Sozlamalar_${state.resolution.width}x${state.resolution.height}.json`;
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          setTimeout(() => URL.revokeObjectURL(url), 4000);
+          showToast('Sozlamalar (.json) yuklab olindi');
+        } catch (err) {
+          console.error('JSON export error:', err);
+          showToast('Zaxira faylni yaratishda xatolik');
+        }
+      });
+
+      importJsonInput.addEventListener('change', (e) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = async () => {
+          try {
+            const parsed = JSON.parse(String(reader.result || '{}'));
+            const incomingState = parsed?.state || parsed;
+            state = sanitizeState(incomingState);
+            saveState();
+
+            const incomingLogo = typeof parsed?.logoDataUrl === 'string' ? parsed.logoDataUrl : null;
+            await saveLogoToIDB(incomingLogo);
+            applyLogoImage(incomingLogo, true);
+
+            syncAllControlsFromState();
+            renderFrame(currentTime);
+            showToast('Barcha sozlamalar va logotip tiklandi!');
+          } catch (err) {
+            console.error('JSON import error:', err);
+            showToast("Noto'g'ri JSON fayl formati");
+          }
+        };
+        reader.readAsText(file);
+        importJsonInput.value = '';
+      });
+
       /* =========================================================================
-       * 11. PLAYBACK LOOP & TIMELINE SCRUBBING
+       * 13. PLAYBACK LOOP & TIMELINE SCRUBBING
        * ========================================================================= */
-      let currentTime = 2.0; // Start on Intro so user immediately sees Intro Logo + 3D Title + Subtitle
+      let currentTime = 2.2;
       let isPlaying = true;
       let lastRafTs = null;
       let isRecording = false;
@@ -2448,7 +2605,7 @@
       }
 
       /* =========================================================================
-       * 12. REAL-TIME VIDEO EXPORT (MP4 / WEBM via MediaRecorder @ 14 Mbps)
+       * 14. REAL-TIME VIDEO EXPORT (MP4 / WEBM via MediaRecorder @ 14 Mbps)
        * ========================================================================= */
       function pickSupportedMimeType() {
         const candidates = [
@@ -2557,13 +2714,13 @@
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `MR_Benzin_3D_${W}x${H}.${chosen.ext}`;
+            a.download = `MR_AYOQSH_3D_${W}x${H}.${chosen.ext}`;
             document.body.appendChild(a);
             a.click();
             a.remove();
             setTimeout(() => URL.revokeObjectURL(url), 5000);
 
-            showToast(`Tayyor! MR_Benzin_3D_${W}x${H}.${chosen.ext} yuklab olindi`);
+            showToast(`Tayyor! MR_AYOQSH_3D_${W}x${H}.${chosen.ext} yuklab olindi`);
           } else if (abortRecording) {
             showToast('Video yozib olish bekor qilindi');
           }
@@ -2589,17 +2746,21 @@
       });
 
       /* =========================================================================
-       * 13. INITIALIZATION
+       * 15. INITIALIZATION
        * ========================================================================= */
       window.addEventListener('resize', () => {
         syncCanvasDimensions();
         renderFrame(currentTime);
       });
 
-      window.onload = function () {
+      window.onload = async function () {
         syncAllControlsFromState();
         updateScrubberUI();
         renderFrame(currentTime);
+
+        // Load persisted logo from IndexedDB, or fall back to GitHub Pages ./logo.png
+        const savedLogo = await loadLogoFromIDB();
+        applyLogoImage(savedLogo, true);
 
         if (document.fonts && document.fonts.ready) {
           document.fonts.ready.then(() => {
