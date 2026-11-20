@@ -1,0 +1,2615 @@
+<!DOCTYPE html>
+<html lang="uz" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MR Benzin — 3D LED Video Generator</title>
+
+  <!-- Google Fonts: Inter (UI) & Montserrat (Bold 3D LED Typography) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            display: ['Montserrat', 'sans-serif'],
+          },
+          colors: {
+            studio: {
+              bg: '#070b14',
+              panel: '#0e1526',
+              card: '#141e35',
+              border: '#243252',
+              gold: '#f5b82e',
+              goldLight: '#ffe082',
+            },
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      background: radial-gradient(circle at 20% 0%, #111c36 0%, #070b14 60%);
+      color: #e2e8f0;
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+    }
+
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(15, 23, 42, 0.5);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(100, 116, 139, 0.45);
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(245, 184, 46, 0.65);
+    }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      height: 6px;
+      border-radius: 9999px;
+      background: #1e293b;
+      outline: none;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 9999px;
+      background: linear-gradient(135deg, #ffe58f 0%, #f5b82e 55%, #b4690e 100%);
+      border: 2px solid #0f172a;
+      box-shadow: 0 0 10px rgba(245, 184, 46, 0.55);
+      cursor: pointer;
+      transition: transform 0.15s ease;
+    }
+    input[type="range"]::-webkit-slider-thumb:hover {
+      transform: scale(1.15);
+    }
+    input[type="range"]::-moz-range-thumb {
+      width: 16px;
+      height: 16px;
+      border-radius: 9999px;
+      background: linear-gradient(135deg, #ffe58f 0%, #f5b82e 55%, #b4690e 100%);
+      border: 2px solid #0f172a;
+      box-shadow: 0 0 10px rgba(245, 184, 46, 0.55);
+      cursor: pointer;
+    }
+
+    .glass-panel {
+      background: rgba(14, 21, 38, 0.86);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+
+    .canvas-stage-shadow {
+      box-shadow:
+        0 25px 60px -15px rgba(0, 0, 0, 0.85),
+        0 0 0 1px rgba(245, 184, 46, 0.22),
+        0 0 40px rgba(245, 184, 46, 0.08);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- Toast Notification Banner (No alert() / confirm()) -->
+  <div
+    id="toastBanner"
+    class="fixed top-4 right-4 z-50 max-w-sm px-4 py-3 rounded-xl border border-amber-400/40 bg-slate-900/95 text-sm text-amber-100 shadow-2xl transform -translate-y-4 opacity-0 pointer-events-none transition-all duration-300 flex items-center gap-2.5"
+    role="status"
+    aria-live="polite"
+  >
+    <span class="w-2.5 h-2.5 rounded-full bg-amber-400 shrink-0"></span>
+    <span id="toastText">Tayyor!</span>
+  </div>
+
+  <!-- Top Header -->
+  <header class="w-full border-b border-studio-border/80 bg-slate-950/75 backdrop-blur-md sticky top-0 z-30">
+    <div class="max-w-[1600px] mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-300 via-amber-500 to-orange-700 flex items-center justify-center shadow-lg shadow-amber-500/20">
+          <svg class="w-6 h-6 text-slate-950" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z" />
+          </svg>
+        </div>
+        <div>
+          <h1 class="text-base sm:text-lg font-bold tracking-tight text-white flex items-center gap-2">
+            MR Benzin <span class="text-amber-400">3D LED Studio</span>
+          </h1>
+          <p class="text-[11px] sm:text-xs text-slate-400">
+            Avtomatik LED ekran video generatori — 3D metall yozuvlar &amp; HD eksport
+          </p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <span
+          id="headerResBadge"
+          class="px-3 py-1 rounded-full text-xs font-mono font-semibold bg-amber-500/15 text-amber-300 border border-amber-400/30"
+        >
+          400 × 880 px
+        </span>
+        <span
+          id="headerFpsBadge"
+          class="px-2.5 py-1 rounded-full text-xs font-mono bg-slate-800/90 text-slate-300 border border-studio-border"
+        >
+          60 FPS • 2x SS
+        </span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Two-Column Responsive Workspace -->
+  <main class="flex-1 w-full max-w-[1600px] mx-auto p-3 sm:p-4 lg:p-5 grid grid-cols-1 lg:grid-cols-[415px_1fr] gap-4 lg:gap-6 items-start">
+
+    <!-- ===================================================================== -->
+    <!-- LEFT COLUMN: CONTROL PANEL (4 TABS)                                   -->
+    <!-- ===================================================================== -->
+    <aside class="glass-panel border border-studio-border/90 rounded-2xl shadow-2xl flex flex-col overflow-hidden lg:sticky lg:top-[76px] lg:max-h-[calc(100vh-96px)]">
+
+      <!-- 4 Clean Tabs -->
+      <nav class="grid grid-cols-4 gap-1 p-2 bg-slate-950/70 border-b border-studio-border/80 shrink-0" role="tablist">
+        <button
+          type="button"
+          data-tab="prices"
+          class="tab-btn px-2 py-2.5 rounded-xl text-xs font-semibold transition-all text-center cursor-pointer bg-amber-500/20 text-amber-300 border border-amber-400/40 shadow-sm"
+        >
+          Narxlar
+        </button>
+        <button
+          type="button"
+          data-tab="sizes"
+          class="tab-btn px-2 py-2.5 rounded-xl text-xs font-semibold transition-all text-center cursor-pointer text-slate-400 hover:text-white hover:bg-slate-800/70 border border-transparent"
+        >
+          O'lchamlar
+        </button>
+        <button
+          type="button"
+          data-tab="texts"
+          class="tab-btn px-2 py-2.5 rounded-xl text-xs font-semibold transition-all text-center cursor-pointer text-slate-400 hover:text-white hover:bg-slate-800/70 border border-transparent"
+        >
+          Matn / Logo
+        </button>
+        <button
+          type="button"
+          data-tab="design"
+          class="tab-btn px-2 py-2.5 rounded-xl text-xs font-semibold transition-all text-center cursor-pointer text-slate-400 hover:text-white hover:bg-slate-800/70 border border-transparent"
+        >
+          3D / Dizayn
+        </button>
+      </nav>
+
+      <!-- Scrollable Tab Content -->
+      <div class="p-4 overflow-y-auto flex-1 space-y-4">
+
+        <!-- TAB 1: NARXLAR (FUEL PRICES) -->
+        <section id="tab-prices" class="tab-panel space-y-3.5">
+          <div class="flex items-center justify-between">
+            <div>
+              <h2 class="text-sm font-bold text-white">Yoqilg'i narxlari</h2>
+              <p class="text-[11px] text-slate-400">Belgilangan qatorlar videoda ko'rinadi</p>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <button
+                type="button"
+                id="addFuelBtn"
+                class="px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 border border-emerald-500/30 transition cursor-pointer"
+              >
+                + Qo'shish
+              </button>
+              <button
+                type="button"
+                id="resetFuelsBtn"
+                class="px-2.5 py-1.5 rounded-lg text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-300 border border-studio-border transition cursor-pointer"
+                title="Standart narxlarga qaytarish"
+              >
+                Tiklash
+              </button>
+            </div>
+          </div>
+
+          <div id="fuelListContainer" class="space-y-2"></div>
+        </section>
+
+        <!-- TAB 2: O'LCHAMLAR (DIMENSIONS & DECOUPLED SIZING SLIDERS) -->
+        <section id="tab-sizes" class="tab-panel hidden space-y-4">
+          <!-- Resolution Inputs -->
+          <div class="bg-slate-900/75 border border-studio-border/80 rounded-xl p-3.5 space-y-3">
+            <div class="flex items-center justify-between">
+              <h2 class="text-sm font-bold text-white">Video o'lchami (px)</h2>
+              <span class="text-[11px] text-slate-400">160 – 2160 px</span>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label for="videoWidthInput" class="block text-[11px] text-slate-400 mb-1">Eni (Width)</label>
+                <input
+                  id="videoWidthInput"
+                  type="number"
+                  min="160"
+                  max="2160"
+                  step="2"
+                  value="400"
+                  class="w-full bg-slate-950/90 border border-studio-border focus:border-amber-400 rounded-xl px-3 py-2 text-sm font-mono font-bold text-white outline-none transition"
+                />
+              </div>
+              <div>
+                <label for="videoHeightInput" class="block text-[11px] text-slate-400 mb-1">Balandligi (Height)</label>
+                <input
+                  id="videoHeightInput"
+                  type="number"
+                  min="160"
+                  max="2160"
+                  step="2"
+                  value="880"
+                  class="w-full bg-slate-950/90 border border-studio-border focus:border-amber-400 rounded-xl px-3 py-2 text-sm font-mono font-bold text-white outline-none transition"
+                />
+              </div>
+            </div>
+
+            <!-- 6 Quick Resolution Presets -->
+            <div>
+              <p class="text-[11px] text-slate-400 mb-2">Tezkor shablonlar:</p>
+              <div class="grid grid-cols-2 gap-1.5">
+                <button type="button" data-preset="400x880" class="preset-btn px-2.5 py-2 rounded-lg text-xs font-medium bg-slate-800/90 hover:bg-amber-500/20 hover:text-amber-300 border border-studio-border transition cursor-pointer">
+                  400×880 <span class="text-amber-400">(Asl)</span>
+                </button>
+                <button type="button" data-preset="320x640" class="preset-btn px-2.5 py-2 rounded-lg text-xs font-medium bg-slate-800/90 hover:bg-amber-500/20 hover:text-amber-300 border border-studio-border transition cursor-pointer">
+                  320×640
+                </button>
+                <button type="button" data-preset="480x960" class="preset-btn px-2.5 py-2 rounded-lg text-xs font-medium bg-slate-800/90 hover:bg-amber-500/20 hover:text-amber-300 border border-studio-border transition cursor-pointer">
+                  480×960
+                </button>
+                <button type="button" data-preset="720x1280" class="preset-btn px-2.5 py-2 rounded-lg text-xs font-medium bg-slate-800/90 hover:bg-amber-500/20 hover:text-amber-300 border border-studio-border transition cursor-pointer">
+                  720×1280 <span class="text-slate-400">(HD)</span>
+                </button>
+                <button type="button" data-preset="1080x1920" class="preset-btn px-2.5 py-2 rounded-lg text-xs font-medium bg-slate-800/90 hover:bg-amber-500/20 hover:text-amber-300 border border-studio-border transition cursor-pointer">
+                  1080×1920 <span class="text-slate-400">(Full HD)</span>
+                </button>
+                <button type="button" data-preset="800x800" class="preset-btn px-2.5 py-2 rounded-lg text-xs font-medium bg-slate-800/90 hover:bg-amber-500/20 hover:text-amber-300 border border-studio-border transition cursor-pointer">
+                  800×800 <span class="text-slate-400">(Kvadrat)</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 7 Independent Logo & Typography Sliders -->
+          <div class="space-y-2.5">
+            <div class="flex items-center justify-between gap-2">
+              <h3 class="text-sm font-bold text-white">Logo va yozuv o'lchamlari</h3>
+              <button
+                type="button"
+                id="resetSizesBtn"
+                class="px-2.5 py-1 rounded-lg text-[11px] font-medium bg-slate-800 hover:bg-slate-700 text-slate-300 border border-studio-border transition cursor-pointer shrink-0"
+              >
+                Standart holatga qaytarish
+              </button>
+            </div>
+
+            <!-- 1. Logo Graphic Size ONLY (40% - 220%) -->
+            <div class="bg-slate-900/75 border border-amber-400/25 rounded-xl p-3">
+              <div class="flex items-center justify-between mb-1.5">
+                <label for="logoScaleRange" class="text-xs font-semibold text-amber-200">Logotip rasmi o'lchami</label>
+                <span id="logoScaleVal" class="text-xs font-mono font-bold text-amber-400">100%</span>
+              </div>
+              <input id="logoScaleRange" type="range" min="40" max="220" step="5" value="100" class="w-full" />
+              <p class="text-[10px] text-slate-400 mt-1">Faqat logotip rasmini kattalashtiradi, yozuvlarga ta'sir qilmaydi</p>
+            </div>
+
+            <!-- 2. Brand Text Size ONLY (50% - 200%) -->
+            <div class="bg-slate-900/75 border border-studio-border/80 rounded-xl p-3">
+              <div class="flex items-center justify-between mb-1.5">
+                <label for="brandTextScaleRange" class="text-xs font-medium text-slate-200">Brend matni o'lchami</label>
+                <span id="brandTextScaleVal" class="text-xs font-mono font-bold text-amber-400">100%</span>
+              </div>
+              <input id="brandTextScaleRange" type="range" min="50" max="200" step="5" value="100" class="w-full" />
+              <p class="text-[10px] text-slate-400 mt-1">Faqat Brend nomi va Brend ost-matni o'lchamini o'zgartiradi</p>
+            </div>
+
+            <!-- 3. Intro Title Size (50% - 200%) -->
+            <div class="bg-slate-900/75 border border-studio-border/80 rounded-xl p-3">
+              <div class="flex items-center justify-between mb-1.5">
+                <label for="introScaleRange" class="text-xs font-medium text-slate-200">Kirish sarlavhasi o'lchami</label>
+                <span id="introScaleVal" class="text-xs font-mono font-bold text-amber-400">100%</span>
+              </div>
+              <input id="introScaleRange" type="range" min="50" max="200" step="5" value="100" class="w-full" />
+            </div>
+
+            <!-- 4. Intro Subtitle Size (50% - 200%) -->
+            <div class="bg-slate-900/75 border border-studio-border/80 rounded-xl p-3">
+              <div class="flex items-center justify-between mb-1.5">
+                <label for="introSubScaleRange" class="text-xs font-medium text-slate-200">Kirish ost-matni o'lchami</label>
+                <span id="introSubScaleVal" class="text-xs font-mono font-bold text-amber-400">100%</span>
+              </div>
+              <input id="introSubScaleRange" type="range" min="50" max="200" step="5" value="100" class="w-full" />
+            </div>
+
+            <!-- 5. Fuel Name Size (50% - 200%) -->
+            <div class="bg-slate-900/75 border border-studio-border/80 rounded-xl p-3">
+              <div class="flex items-center justify-between mb-1.5">
+                <label for="fuelLabelScaleRange" class="text-xs font-medium text-slate-200">Yoqilg'i nomi o'lchami</label>
+                <span id="fuelLabelScaleVal" class="text-xs font-mono font-bold text-amber-400">100%</span>
+              </div>
+              <input id="fuelLabelScaleRange" type="range" min="50" max="200" step="5" value="100" class="w-full" />
+            </div>
+
+            <!-- 6. Price Number Size (50% - 200%) -->
+            <div class="bg-slate-900/75 border border-studio-border/80 rounded-xl p-3">
+              <div class="flex items-center justify-between mb-1.5">
+                <label for="priceScaleRange" class="text-xs font-medium text-slate-200">Narx raqamlari o'lchami</label>
+                <span id="priceScaleVal" class="text-xs font-mono font-bold text-amber-400">100%</span>
+              </div>
+              <input id="priceScaleRange" type="range" min="50" max="200" step="5" value="100" class="w-full" />
+            </div>
+
+            <!-- 7. Row Spacing (70% - 140%) -->
+            <div class="bg-slate-900/75 border border-studio-border/80 rounded-xl p-3">
+              <div class="flex items-center justify-between mb-1.5">
+                <label for="rowSpacingRange" class="text-xs font-medium text-slate-200">Qatorlar oralig'i</label>
+                <span id="rowSpacingVal" class="text-xs font-mono font-bold text-amber-400">100%</span>
+              </div>
+              <input id="rowSpacingRange" type="range" min="70" max="140" step="5" value="100" class="w-full" />
+            </div>
+          </div>
+        </section>
+
+        <!-- TAB 3: MATN / LOGOTIP (TEXTS & LOGO) -->
+        <section id="tab-texts" class="tab-panel hidden space-y-3.5">
+          <!-- Logo Upload & Intro Logo Toggle -->
+          <div class="bg-slate-900/75 border border-studio-border/80 rounded-xl p-3.5 space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-semibold text-white">Logotip (PNG / JPG / SVG)</span>
+              <button
+                type="button"
+                id="removeLogoBtn"
+                class="px-2.5 py-1 rounded-lg text-[11px] font-medium bg-rose-500/15 hover:bg-rose-500/25 text-rose-300 border border-rose-500/30 transition cursor-pointer hidden"
+              >
+                Logotipni o'chirish
+              </button>
+            </div>
+
+            <div class="flex items-center gap-3">
+              <div
+                id="logoPreviewBox"
+                class="w-14 h-14 rounded-xl bg-slate-950 border border-studio-border flex items-center justify-center overflow-hidden shrink-0"
+              >
+                <span class="text-[10px] text-slate-500 text-center px-1">Standart emblema</span>
+              </div>
+              <label class="flex-1 cursor-pointer">
+                <span class="block w-full text-center px-3 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-studio-border text-xs font-medium text-slate-200 transition">
+                  Logotip yuklash (PNG / SVG)
+                </span>
+                <input id="logoFileInput" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" class="hidden" />
+              </label>
+            </div>
+
+            <!-- Toggle: Show Logo in Intro Scene -->
+            <label class="flex items-center justify-between gap-2 pt-2 border-t border-studio-border/60 cursor-pointer">
+              <div>
+                <span class="block text-xs font-semibold text-amber-200">Kirish qismida logotipni ko'rsatish</span>
+                <span class="block text-[10px] text-slate-400">0–4.5s sahnasida sarlavha tepasida ko'rinadi</span>
+              </div>
+              <input
+                id="showLogoInIntroCheckbox"
+                type="checkbox"
+                checked
+                class="w-4 h-4 accent-amber-400 rounded cursor-pointer shrink-0"
+              />
+            </label>
+          </div>
+
+          <div class="p-3 rounded-xl bg-amber-500/10 border border-amber-400/25 text-[11px] text-amber-200/90 leading-relaxed">
+            Uzun matnlar avtomatik pastki qatorga tushadi. Qo'lda bo'lish uchun <strong>Enter</strong> tugmasini bosing.
+          </div>
+
+          <div class="space-y-3">
+            <div>
+              <label for="introTitleInput" class="block text-xs font-medium text-slate-300 mb-1">
+                Kirish sarlavhasi <span class="text-slate-500">(0–4.5s)</span>
+              </label>
+              <textarea
+                id="introTitleInput"
+                rows="2"
+                class="w-full bg-slate-900/90 border border-studio-border focus:border-amber-400 rounded-xl px-3 py-2 text-sm text-white outline-none transition resize-y"
+              ></textarea>
+            </div>
+
+            <div>
+              <label for="introSubInput" class="block text-xs font-medium text-slate-300 mb-1">
+                Kirish ost-matni <span class="text-slate-500">(0–4.5s • Avto-qator)</span>
+              </label>
+              <textarea
+                id="introSubInput"
+                rows="3"
+                class="w-full bg-slate-900/90 border border-studio-border focus:border-amber-400 rounded-xl px-3 py-2 text-sm text-white outline-none transition resize-y"
+              ></textarea>
+            </div>
+
+            <div>
+              <label for="brandNameInput" class="block text-xs font-medium text-slate-300 mb-1">
+                Brend nomi <span class="text-slate-500">(4.5–9s)</span>
+              </label>
+              <input
+                id="brandNameInput"
+                type="text"
+                class="w-full bg-slate-900/90 border border-studio-border focus:border-amber-400 rounded-xl px-3 py-2 text-sm text-white outline-none transition"
+              />
+            </div>
+
+            <div>
+              <label for="brandSubInput" class="block text-xs font-medium text-slate-300 mb-1">
+                Brend ost-matni <span class="text-slate-500">(4.5–9s • Avto-qator)</span>
+              </label>
+              <textarea
+                id="brandSubInput"
+                rows="2"
+                class="w-full bg-slate-900/90 border border-studio-border focus:border-amber-400 rounded-xl px-3 py-2 text-sm text-white outline-none transition resize-y"
+              ></textarea>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label for="priceHeaderInput" class="block text-xs font-medium text-slate-300 mb-1">
+                  Narxlar sarlavhasi <span class="text-slate-500">(9–20s)</span>
+                </label>
+                <input
+                  id="priceHeaderInput"
+                  type="text"
+                  class="w-full bg-slate-900/90 border border-studio-border focus:border-amber-400 rounded-xl px-3 py-2 text-sm text-white outline-none transition"
+                />
+              </div>
+
+              <div>
+                <label for="footerUnitInput" class="block text-xs font-medium text-slate-300 mb-1">
+                  Pastki o'lchov birligi
+                </label>
+                <input
+                  id="footerUnitInput"
+                  type="text"
+                  class="w-full bg-slate-900/90 border border-studio-border focus:border-amber-400 rounded-xl px-3 py-2 text-sm text-white outline-none transition"
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- TAB 4: 3D VA DIZAYN (3D & EXPORT SETTINGS) -->
+        <section id="tab-design" class="tab-panel hidden space-y-3.5">
+          <!-- 3D Depth Slider -->
+          <div class="bg-slate-900/75 border border-studio-border/80 rounded-xl p-3">
+            <div class="flex items-center justify-between mb-1.5">
+              <label for="depthRange" class="text-xs font-medium text-slate-200">3D chuqurlik (Extrusion)</label>
+              <span id="depthVal" class="text-xs font-mono font-bold text-amber-400">6 px</span>
+            </div>
+            <input id="depthRange" type="range" min="0" max="12" step="1" value="6" class="w-full" />
+          </div>
+
+          <!-- Metallic Specular Shine Toggle -->
+          <div class="bg-slate-900/75 border border-studio-border/80 rounded-xl p-3">
+            <label class="flex items-center justify-between gap-2 cursor-pointer">
+              <div>
+                <span class="block text-xs font-medium text-slate-200">Metall yaltirash (Specular Shine)</span>
+                <span class="block text-[10px] text-slate-400">3D harflar yuzasidan o'tuvchi yorqin jilo</span>
+              </div>
+              <input
+                id="shineEnabledCheckbox"
+                type="checkbox"
+                checked
+                class="w-4 h-4 accent-amber-400 rounded cursor-pointer shrink-0"
+              />
+            </label>
+          </div>
+
+          <!-- Glow / Shadow Slider -->
+          <div class="bg-slate-900/75 border border-studio-border/80 rounded-xl p-3">
+            <div class="flex items-center justify-between mb-1.5">
+              <label for="glowRange" class="text-xs font-medium text-slate-200">Nurlanish / soya (Glow)</label>
+              <span id="glowVal" class="text-xs font-mono font-bold text-amber-400">75%</span>
+            </div>
+            <input id="glowRange" type="range" min="0" max="100" step="5" value="75" class="w-full" />
+          </div>
+
+          <!-- 4 Background Themes -->
+          <div class="bg-slate-900/75 border border-studio-border/80 rounded-xl p-3.5 space-y-2.5">
+            <span class="block text-xs font-semibold text-white">Fon mavzusi</span>
+            <div class="grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                data-theme="royal"
+                class="theme-btn flex items-center gap-2 px-3 py-2.5 rounded-xl border border-studio-border bg-slate-950/70 hover:border-amber-400/60 transition cursor-pointer text-left"
+              >
+                <span class="w-4 h-4 rounded-full bg-gradient-to-br from-blue-500 to-blue-950 border border-white/30 shrink-0"></span>
+                <span class="text-xs font-medium text-slate-200">Royal Ko'k</span>
+              </button>
+              <button
+                type="button"
+                data-theme="navy"
+                class="theme-btn flex items-center gap-2 px-3 py-2.5 rounded-xl border border-studio-border bg-slate-950/70 hover:border-amber-400/60 transition cursor-pointer text-left"
+              >
+                <span class="w-4 h-4 rounded-full bg-gradient-to-br from-indigo-900 to-slate-950 border border-white/30 shrink-0"></span>
+                <span class="text-xs font-medium text-slate-200">To'q Navy</span>
+              </button>
+              <button
+                type="button"
+                data-theme="emerald"
+                class="theme-btn flex items-center gap-2 px-3 py-2.5 rounded-xl border border-studio-border bg-slate-950/70 hover:border-amber-400/60 transition cursor-pointer text-left"
+              >
+                <span class="w-4 h-4 rounded-full bg-gradient-to-br from-emerald-600 to-teal-950 border border-white/30 shrink-0"></span>
+                <span class="text-xs font-medium text-slate-200">Zumrad Yashil</span>
+              </button>
+              <button
+                type="button"
+                data-theme="black"
+                class="theme-btn flex items-center gap-2 px-3 py-2.5 rounded-xl border border-studio-border bg-slate-950/70 hover:border-amber-400/60 transition cursor-pointer text-left"
+              >
+                <span class="w-4 h-4 rounded-full bg-gradient-to-br from-zinc-700 to-black border border-white/30 shrink-0"></span>
+                <span class="text-xs font-medium text-slate-200">Tungi Qora</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Export Quality Settings -->
+          <div class="bg-slate-900/75 border border-studio-border/80 rounded-xl p-3.5 space-y-3">
+            <span class="block text-xs font-semibold text-white">Video eksport sifati</span>
+
+            <div class="grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                data-fps="60"
+                class="fps-btn px-3 py-2 rounded-xl text-xs font-semibold border transition cursor-pointer"
+              >
+                60 FPS (Silliq)
+              </button>
+              <button
+                type="button"
+                data-fps="30"
+                class="fps-btn px-3 py-2 rounded-xl text-xs font-semibold border transition cursor-pointer"
+              >
+                30 FPS (Tez)
+              </button>
+            </div>
+
+            <label class="flex items-center justify-between gap-2 pt-1 cursor-pointer">
+              <div>
+                <span class="block text-xs font-medium text-slate-200">2x Supersampling</span>
+                <span class="block text-[10px] text-slate-400">O'ta tiniq 3D qirralar uchun ichki 2x render</span>
+              </div>
+              <input
+                id="supersampleCheckbox"
+                type="checkbox"
+                checked
+                class="w-4 h-4 accent-amber-400 rounded cursor-pointer"
+              />
+            </label>
+          </div>
+        </section>
+
+      </div>
+    </aside>
+
+    <!-- ===================================================================== -->
+    <!-- RIGHT COLUMN: LIVE CANVAS PREVIEW, TIMELINE & EXPORT                  -->
+    <!-- ===================================================================== -->
+    <section class="glass-panel border border-studio-border/90 rounded-2xl shadow-2xl p-4 sm:p-5 flex flex-col items-center gap-4">
+
+      <!-- Quick Scene Jump Buttons -->
+      <div class="w-full flex flex-wrap items-center justify-between gap-2">
+        <div class="flex flex-wrap items-center gap-2">
+          <button
+            type="button"
+            id="jumpIntroBtn"
+            class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-800/90 hover:bg-amber-500/20 hover:text-amber-300 text-slate-200 border border-studio-border transition cursor-pointer"
+          >
+            Kirish
+          </button>
+          <button
+            type="button"
+            id="jumpLogoBtn"
+            class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-800/90 hover:bg-amber-500/20 hover:text-amber-300 text-slate-200 border border-studio-border transition cursor-pointer"
+          >
+            Logotip
+          </button>
+          <button
+            type="button"
+            id="jumpPricesBtn"
+            class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-800/90 hover:bg-amber-500/20 hover:text-amber-300 text-slate-200 border border-studio-border transition cursor-pointer"
+          >
+            Narxlar
+          </button>
+        </div>
+
+        <span
+          id="phaseLabelDisplay"
+          class="text-xs font-mono px-2.5 py-1 rounded-lg bg-slate-900 text-amber-300 border border-studio-border"
+        >
+          Kirish (0–4.5s)
+        </span>
+      </div>
+
+      <!-- Centered Live Canvas Stage -->
+      <div class="w-full flex items-center justify-center py-2">
+        <div
+          id="canvasWrapper"
+          class="relative rounded-2xl overflow-hidden canvas-stage-shadow bg-black flex items-center justify-center"
+        >
+          <canvas id="previewCanvas" class="block"></canvas>
+
+          <!-- Recording Overlay Indicator -->
+          <div
+            id="recordingBadge"
+            class="hidden absolute top-3 left-3 px-2.5 py-1 rounded-full bg-rose-600/90 text-white text-[11px] font-bold tracking-wide items-center gap-1.5 shadow-lg"
+          >
+            <span class="w-2 h-2 rounded-full bg-white animate-pulse"></span>
+            REC
+          </div>
+        </div>
+      </div>
+
+      <!-- Playback & Timeline Controls -->
+      <div class="w-full max-w-2xl bg-slate-900/80 border border-studio-border/80 rounded-2xl p-3.5 space-y-3">
+        <div class="flex items-center gap-3">
+          <button
+            type="button"
+            id="playPauseBtn"
+            class="w-10 h-10 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 flex items-center justify-center shrink-0 shadow-lg shadow-amber-500/20 transition cursor-pointer"
+            title="Boshlash / Pauza"
+          >
+            <svg id="pauseIcon" class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M6 5h4v14H6zm8 0h4v14h-4z" />
+            </svg>
+            <svg id="playIcon" class="w-5 h-5 hidden" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M8 5v14l11-7z" />
+            </svg>
+          </button>
+
+          <div class="flex-1 flex flex-col gap-1">
+            <input
+              id="timelineScrubber"
+              type="range"
+              min="0"
+              max="20"
+              step="0.05"
+              value="0"
+              class="w-full"
+            />
+            <div class="flex items-center justify-between text-[11px] font-mono text-slate-400">
+              <span id="currentTimeDisplay" class="text-amber-300 font-semibold">0.0s</span>
+              <span>20.0s</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Export Progress Bar -->
+        <div id="exportProgressContainer" class="hidden space-y-1.5 pt-1">
+          <div class="flex items-center justify-between text-xs">
+            <span id="exportStatusText" class="text-amber-300 font-medium">Video yozib olinmoqda...</span>
+            <span id="exportPercentText" class="font-mono font-bold text-white">0%</span>
+          </div>
+          <div class="w-full h-2.5 bg-slate-950 rounded-full overflow-hidden border border-studio-border">
+            <div
+              id="exportProgressBar"
+              class="h-full bg-gradient-to-r from-amber-500 via-yellow-300 to-amber-500 transition-all duration-100"
+              style="width: 0%"
+            ></div>
+          </div>
+        </div>
+
+        <!-- Export & Cancel Buttons -->
+        <div class="flex flex-col sm:flex-row gap-2">
+          <button
+            type="button"
+            id="exportVideoBtn"
+            class="flex-1 py-3.5 px-5 rounded-xl font-bold text-sm text-slate-950 bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 hover:from-amber-300 hover:to-amber-400 active:scale-[0.99] shadow-xl shadow-amber-500/20 transition-all flex items-center justify-center gap-2 cursor-pointer"
+          >
+            <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="7 10 12 15 17 10" />
+              <line x1="12" y1="15" x2="12" y2="3" />
+            </svg>
+            <span id="exportBtnLabel">Videoni yozib olish va yuklab olish (400×880)</span>
+          </button>
+
+          <button
+            type="button"
+            id="cancelExportBtn"
+            class="hidden py-3.5 px-4 rounded-xl font-semibold text-xs text-rose-200 bg-rose-600/25 hover:bg-rose-600/40 border border-rose-500/40 transition cursor-pointer"
+          >
+            Bekor qilish
+          </button>
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      'use strict';
+
+      /* =========================================================================
+       * 1. CONSTANTS, DEFAULTS & SAFE LOCALSTORAGE PERSISTENCE
+       * ========================================================================= */
+      const STORAGE_KEY = 'mr_benzin_3d_studio_v5';
+      const TOTAL_DURATION = 20.0; // seconds
+
+      const DEFAULT_FUELS = [
+        { id: 'f1', name: 'АИ-98', price: 13500, enabled: true },
+        { id: 'f2', name: 'АИ-95', price: 12800, enabled: true },
+        { id: 'f3', name: 'АИ-92', price: 11500, enabled: true },
+        { id: 'f4', name: 'АИ-91', price: 10800, enabled: true },
+        { id: 'f5', name: 'ДТ простой', price: 11200, enabled: true },
+        { id: 'f6', name: 'ДТ евро', price: 12500, enabled: true },
+        { id: 'f7', name: 'Печ. топливо', price: 9800, enabled: true },
+      ];
+
+      // Completely decoupled size sliders: logoScale ONLY scales logo graphic;
+      // brandTextScale ONLY scales Brand Name & Brand Subtitle!
+      const DEFAULT_SIZES = {
+        logoScale: 100,
+        brandTextScale: 100,
+        introScale: 100,
+        introSubScale: 100,
+        fuelLabelScale: 100,
+        priceScale: 100,
+        rowSpacing: 100,
+      };
+
+      const DEFAULT_STATE = {
+        resolution: { width: 400, height: 880 },
+        sizes: { ...DEFAULT_SIZES },
+        fuels: DEFAULT_FUELS.map((f) => ({ ...f })),
+        texts: {
+          introTitle: 'XUSH KELIBSIZ!',
+          introSub: "QULAY NARXLARDA SIFATLI VA TOZA YOQILG'I",
+          brandName: 'MR BENZIN',
+          brandSub: "SIFATLI YOQILG'I MARKAZI",
+          priceHeader: "YOQILG'I NARXLARI",
+          footerUnit: "so'm / litr",
+        },
+        showLogoInIntro: true,
+        fx: {
+          depth: 6,
+          shineEnabled: true,
+          glow: 75,
+          theme: 'royal',
+          fps: 60,
+          supersample: true,
+        },
+        logoDataUrl: null,
+      };
+
+      const THEMES = {
+        royal: {
+          bgTop: '#041236',
+          bgMid: '#0a2970',
+          bgBottom: '#030b24',
+          radialInner: 'rgba(34, 110, 245, 0.42)',
+          radialOuter: 'rgba(3, 11, 36, 0)',
+          cardBg: 'rgba(5, 16, 48, 0.72)',
+          cardBorder: 'rgba(245, 184, 46, 0.36)',
+          rayColor: 'rgba(130, 185, 255, 0.08)',
+        },
+        navy: {
+          bgTop: '#05091a',
+          bgMid: '#0e193b',
+          bgBottom: '#02040d',
+          radialInner: 'rgba(56, 85, 180, 0.34)',
+          radialOuter: 'rgba(2, 4, 13, 0)',
+          cardBg: 'rgba(8, 13, 30, 0.78)',
+          cardBorder: 'rgba(245, 184, 46, 0.32)',
+          rayColor: 'rgba(165, 180, 252, 0.07)',
+        },
+        emerald: {
+          bgTop: '#021c18',
+          bgMid: '#063d34',
+          bgBottom: '#021210',
+          radialInner: 'rgba(16, 185, 129, 0.34)',
+          radialOuter: 'rgba(2, 18, 16, 0)',
+          cardBg: 'rgba(3, 27, 23, 0.76)',
+          cardBorder: 'rgba(245, 184, 46, 0.38)',
+          rayColor: 'rgba(110, 231, 183, 0.08)',
+        },
+        black: {
+          bgTop: '#08080c',
+          bgMid: '#181822',
+          bgBottom: '#030305',
+          radialInner: 'rgba(245, 184, 46, 0.16)',
+          radialOuter: 'rgba(3, 3, 5, 0)',
+          cardBg: 'rgba(14, 14, 20, 0.82)',
+          cardBorder: 'rgba(245, 184, 46, 0.40)',
+          rayColor: 'rgba(255, 220, 130, 0.07)',
+        },
+      };
+
+      function deepClone(obj) {
+        return JSON.parse(JSON.stringify(obj));
+      }
+
+      function clampInt(val, min, max) {
+        const n = Math.round(Number(val) || min);
+        return Math.max(min, Math.min(max, n));
+      }
+
+      function loadState() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) return deepClone(DEFAULT_STATE);
+          const parsed = JSON.parse(raw);
+
+          const mergedSizes = { ...DEFAULT_SIZES, ...(parsed?.sizes || {}) };
+          mergedSizes.logoScale = clampInt(mergedSizes.logoScale, 40, 220);
+          mergedSizes.brandTextScale = clampInt(mergedSizes.brandTextScale, 50, 200);
+          mergedSizes.introScale = clampInt(mergedSizes.introScale, 50, 200);
+          mergedSizes.introSubScale = clampInt(mergedSizes.introSubScale, 50, 200);
+          mergedSizes.fuelLabelScale = clampInt(mergedSizes.fuelLabelScale, 50, 200);
+          mergedSizes.priceScale = clampInt(mergedSizes.priceScale, 50, 200);
+          mergedSizes.rowSpacing = clampInt(mergedSizes.rowSpacing, 70, 140);
+
+          return {
+            resolution: {
+              width: clampInt(parsed?.resolution?.width ?? 400, 160, 2160),
+              height: clampInt(parsed?.resolution?.height ?? 880, 160, 2160),
+            },
+            sizes: mergedSizes,
+            fuels:
+              Array.isArray(parsed?.fuels) && parsed.fuels.length > 0
+                ? parsed.fuels.map((f, i) => ({
+                    id: f.id || `f_${i}`,
+                    name: String(f.name ?? ''),
+                    price: Math.max(0, Number(f.price) || 0),
+                    enabled: f.enabled !== false,
+                  }))
+                : DEFAULT_FUELS.map((f) => ({ ...f })),
+            texts: { ...DEFAULT_STATE.texts, ...(parsed?.texts || {}) },
+            showLogoInIntro: parsed?.showLogoInIntro !== false,
+            fx: {
+              ...DEFAULT_STATE.fx,
+              ...(parsed?.fx || {}),
+              shineEnabled: parsed?.fx?.shineEnabled !== false,
+            },
+            logoDataUrl: typeof parsed?.logoDataUrl === 'string' ? parsed.logoDataUrl : null,
+          };
+        } catch (err) {
+          console.warn('localStorage load failed, using defaults:', err);
+          return deepClone(DEFAULT_STATE);
+        }
+      }
+
+      function saveState() {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        } catch (err) {
+          console.warn('localStorage save failed:', err);
+        }
+      }
+
+      let state = loadState();
+
+      /* =========================================================================
+       * 2. DOM REFERENCES
+       * ========================================================================= */
+      const toastBanner = document.getElementById('toastBanner');
+      const toastText = document.getElementById('toastText');
+      const headerResBadge = document.getElementById('headerResBadge');
+      const headerFpsBadge = document.getElementById('headerFpsBadge');
+
+      // Tabs
+      const tabBtns = document.querySelectorAll('.tab-btn');
+      const tabPanels = document.querySelectorAll('.tab-panel');
+
+      // Tab 1: Prices
+      const fuelListContainer = document.getElementById('fuelListContainer');
+      const addFuelBtn = document.getElementById('addFuelBtn');
+      const resetFuelsBtn = document.getElementById('resetFuelsBtn');
+
+      // Tab 2: Dimensions & Sizes
+      const videoWidthInput = document.getElementById('videoWidthInput');
+      const videoHeightInput = document.getElementById('videoHeightInput');
+      const presetBtns = document.querySelectorAll('.preset-btn');
+      const resetSizesBtn = document.getElementById('resetSizesBtn');
+
+      const logoScaleRange = document.getElementById('logoScaleRange');
+      const logoScaleVal = document.getElementById('logoScaleVal');
+      const brandTextScaleRange = document.getElementById('brandTextScaleRange');
+      const brandTextScaleVal = document.getElementById('brandTextScaleVal');
+      const introScaleRange = document.getElementById('introScaleRange');
+      const introScaleVal = document.getElementById('introScaleVal');
+      const introSubScaleRange = document.getElementById('introSubScaleRange');
+      const introSubScaleVal = document.getElementById('introSubScaleVal');
+      const fuelLabelScaleRange = document.getElementById('fuelLabelScaleRange');
+      const fuelLabelScaleVal = document.getElementById('fuelLabelScaleVal');
+      const priceScaleRange = document.getElementById('priceScaleRange');
+      const priceScaleVal = document.getElementById('priceScaleVal');
+      const rowSpacingRange = document.getElementById('rowSpacingRange');
+      const rowSpacingVal = document.getElementById('rowSpacingVal');
+
+      // Tab 3: Texts & Logo
+      const showLogoInIntroCheckbox = document.getElementById('showLogoInIntroCheckbox');
+      const introTitleInput = document.getElementById('introTitleInput');
+      const introSubInput = document.getElementById('introSubInput');
+      const brandNameInput = document.getElementById('brandNameInput');
+      const brandSubInput = document.getElementById('brandSubInput');
+      const priceHeaderInput = document.getElementById('priceHeaderInput');
+      const footerUnitInput = document.getElementById('footerUnitInput');
+      const logoFileInput = document.getElementById('logoFileInput');
+      const removeLogoBtn = document.getElementById('removeLogoBtn');
+      const logoPreviewBox = document.getElementById('logoPreviewBox');
+
+      // Tab 4: 3D & Design
+      const depthRange = document.getElementById('depthRange');
+      const depthVal = document.getElementById('depthVal');
+      const shineEnabledCheckbox = document.getElementById('shineEnabledCheckbox');
+      const glowRange = document.getElementById('glowRange');
+      const glowVal = document.getElementById('glowVal');
+      const themeBtns = document.querySelectorAll('.theme-btn');
+      const fpsBtns = document.querySelectorAll('.fps-btn');
+      const supersampleCheckbox = document.getElementById('supersampleCheckbox');
+
+      // Preview & Playback
+      const previewCanvas = document.getElementById('previewCanvas');
+      const previewCtx = previewCanvas.getContext('2d', { alpha: false });
+      const canvasWrapper = document.getElementById('canvasWrapper');
+      const recordingBadge = document.getElementById('recordingBadge');
+
+      const jumpIntroBtn = document.getElementById('jumpIntroBtn');
+      const jumpLogoBtn = document.getElementById('jumpLogoBtn');
+      const jumpPricesBtn = document.getElementById('jumpPricesBtn');
+      const phaseLabelDisplay = document.getElementById('phaseLabelDisplay');
+
+      const playPauseBtn = document.getElementById('playPauseBtn');
+      const pauseIcon = document.getElementById('pauseIcon');
+      const playIcon = document.getElementById('playIcon');
+      const timelineScrubber = document.getElementById('timelineScrubber');
+      const currentTimeDisplay = document.getElementById('currentTimeDisplay');
+
+      const exportVideoBtn = document.getElementById('exportVideoBtn');
+      const exportBtnLabel = document.getElementById('exportBtnLabel');
+      const cancelExportBtn = document.getElementById('cancelExportBtn');
+      const exportProgressContainer = document.getElementById('exportProgressContainer');
+      const exportStatusText = document.getElementById('exportStatusText');
+      const exportPercentText = document.getElementById('exportPercentText');
+      const exportProgressBar = document.getElementById('exportProgressBar');
+
+      /* =========================================================================
+       * 3. OFFSCREEN CANVASES (2x SUPERSAMPLING + 3D TEXT SCRATCH)
+       * ========================================================================= */
+      const renderCanvas = document.createElement('canvas');
+      const renderCtx = renderCanvas.getContext('2d', { alpha: false });
+
+      const textScratchCanvas = document.createElement('canvas');
+      const textScratchCtx = textScratchCanvas.getContext('2d');
+
+      let customLogoImg = null;
+      let toastTimer = null;
+
+      function showToast(msg) {
+        toastText.textContent = msg;
+        toastBanner.classList.remove('-translate-y-4', 'opacity-0', 'pointer-events-none');
+        toastBanner.classList.add('translate-y-0', 'opacity-100');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => {
+          toastBanner.classList.add('-translate-y-4', 'opacity-0', 'pointer-events-none');
+          toastBanner.classList.remove('translate-y-0', 'opacity-100');
+        }, 3000);
+      }
+
+      /* =========================================================================
+       * 4. MATH, EASING & FORMAT HELPERS
+       * ========================================================================= */
+      function clamp01(v) {
+        return v < 0 ? 0 : v > 1 ? 1 : v;
+      }
+
+      function progress(t, start, end) {
+        if (end <= start) return t >= end ? 1 : 0;
+        return clamp01((t - start) / (end - start));
+      }
+
+      function easeOutCubic(x) {
+        return 1 - Math.pow(1 - x, 3);
+      }
+
+      function easeInOutCubic(x) {
+        return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+      }
+
+      function easeOutBack(x) {
+        const c1 = 1.70158;
+        const c3 = c1 + 1;
+        return 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2);
+      }
+
+      function formatPrice(num) {
+        const n = Math.round(Number(num) || 0);
+        return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+      }
+
+      function getSupersampleFactor() {
+        if (!state.fx.supersample) return 1;
+        const maxDim = Math.max(state.resolution.width, state.resolution.height);
+        return maxDim > 1800 ? 1.5 : 2;
+      }
+
+      /* =========================================================================
+       * 5. STARFIELD PARTICLES
+       * ========================================================================= */
+      const STARS = [];
+      (function initStars() {
+        let seed = 1337;
+        function rand() {
+          seed = (seed * 16807) % 2147483647;
+          return (seed - 1) / 2147483646;
+        }
+        for (let i = 0; i < 65; i++) {
+          STARS.push({
+            nx: rand(),
+            ny: rand(),
+            r: 0.7 + rand() * 1.9,
+            speed: 0.004 + rand() * 0.012,
+            phase: rand() * Math.PI * 2,
+            twinkleFreq: 1.2 + rand() * 2.4,
+            isGold: rand() > 0.42,
+            isCross: rand() > 0.78,
+          });
+        }
+      })();
+
+      /* =========================================================================
+       * 6. CANVAS RESOLUTION & RESPONSIVE DISPLAY SIZING
+       * ========================================================================= */
+      function syncCanvasDimensions() {
+        const W = state.resolution.width;
+        const H = state.resolution.height;
+        const ss = getSupersampleFactor();
+
+        previewCanvas.width = W;
+        previewCanvas.height = H;
+
+        renderCanvas.width = Math.round(W * ss);
+        renderCanvas.height = Math.round(H * ss);
+
+        const maxDisplayH = Math.min(window.innerHeight * 0.64, 620);
+        const maxDisplayW = Math.min(window.innerWidth - 48, 560);
+        const scale = Math.min(maxDisplayW / W, maxDisplayH / H, 1.35);
+
+        const cssW = Math.max(120, Math.round(W * scale));
+        const cssH = Math.max(120, Math.round(H * scale));
+
+        previewCanvas.style.width = `${cssW}px`;
+        previewCanvas.style.height = `${cssH}px`;
+        canvasWrapper.style.width = `${cssW}px`;
+        canvasWrapper.style.height = `${cssH}px`;
+
+        headerResBadge.textContent = `${W} × ${H} px`;
+        headerFpsBadge.textContent = `${state.fx.fps} FPS • ${state.fx.supersample ? '2x SS' : '1x'}`;
+        exportBtnLabel.textContent = `Videoni yozib olish va yuklab olish (${W}×${H})`;
+      }
+
+      /* =========================================================================
+       * 7. 3D METALLIC TEXT ENGINE & MULTI-LINE WORD-WRAPPER
+       * ========================================================================= */
+
+      /**
+       * Wraps text by explicit newlines ('\n') and word boundaries within maxWidth.
+       */
+      function wrapText(ctx, text, maxWidth) {
+        if (!text) return [];
+        const paragraphs = String(text).split(/\r?\n/);
+        const lines = [];
+
+        for (let p = 0; p < paragraphs.length; p++) {
+          const para = paragraphs[p].trim();
+          if (!para) {
+            lines.push('');
+            continue;
+          }
+          const words = para.split(/\s+/);
+          let currentLine = words[0];
+
+          for (let i = 1; i < words.length; i++) {
+            const word = words[i];
+            const candidate = `${currentLine} ${word}`;
+            if (ctx.measureText(candidate).width <= maxWidth) {
+              currentLine = candidate;
+            } else {
+              lines.push(currentLine);
+              currentLine = word;
+            }
+          }
+          lines.push(currentLine);
+        }
+        return lines;
+      }
+
+      /**
+       * Renders a single line of 3D extruded metallic text (Gold or Silver)
+       * with dark shadow, bevel edge highlight, and animated diagonal specular sheen.
+       */
+      function draw3DText(ctx, text, x, y, opts = {}) {
+        if (!text) return;
+        const W = state.resolution.width;
+        const H = state.resolution.height;
+        const uScale = Math.min(W / 400, H / 880);
+        const ss = getSupersampleFactor();
+
+        const {
+          baseSize = 32 * uScale,
+          maxWidth = null,
+          weight = 900,
+          align = 'center',
+          theme = 'gold',
+          alpha = 1,
+          scale = 1,
+          depth = state.fx.depth * uScale,
+          shineCycle = -1,
+        } = opts;
+
+        if (alpha <= 0.005) return;
+
+        let fontSize = Math.max(10, baseSize);
+        ctx.save();
+        ctx.font = `${weight} ${fontSize}px Montserrat, sans-serif`;
+
+        if (maxWidth && maxWidth > 0) {
+          const measured = ctx.measureText(text).width;
+          if (measured > maxWidth) {
+            fontSize = Math.max(9, fontSize * (maxWidth / measured));
+            ctx.font = `${weight} ${fontSize}px Montserrat, sans-serif`;
+          }
+        }
+
+        const metrics = ctx.measureText(text);
+        const textW = Math.ceil(metrics.width);
+        const textH = Math.ceil(fontSize * 1.45);
+        const pad = Math.ceil(Math.max(22, depth * 2.5 + fontSize * 0.45));
+        const scratchW = textW + pad * 2;
+        const scratchH = textH + pad * 2;
+
+        const reqW = Math.max(4, Math.ceil(scratchW * ss));
+        const reqH = Math.max(4, Math.ceil(scratchH * ss));
+        if (textScratchCanvas.width < reqW || textScratchCanvas.height < reqH) {
+          textScratchCanvas.width = Math.max(textScratchCanvas.width, reqW);
+          textScratchCanvas.height = Math.max(textScratchCanvas.height, reqH);
+        }
+
+        const sctx = textScratchCtx;
+        sctx.save();
+        sctx.setTransform(1, 0, 0, 1, 0, 0);
+        sctx.clearRect(0, 0, reqW, reqH);
+        sctx.setTransform(ss, 0, 0, ss, 0, 0);
+
+        sctx.font = `${weight} ${fontSize}px Montserrat, sans-serif`;
+        sctx.textBaseline = 'middle';
+        sctx.textAlign = align;
+
+        let anchorX = scratchW / 2;
+        if (align === 'left') anchorX = pad;
+        else if (align === 'right') anchorX = scratchW - pad;
+        const anchorY = scratchH / 2;
+
+        const steps = Math.max(0, Math.round(depth));
+        const glowAmt = state.fx.glow / 100;
+
+        // 1. Soft Ground Drop Shadow
+        if (glowAmt > 0.02) {
+          sctx.save();
+          sctx.shadowColor =
+            theme === 'gold'
+              ? `rgba(0, 0, 0, ${0.82 * glowAmt})`
+              : `rgba(0, 0, 0, ${0.75 * glowAmt})`;
+          sctx.shadowBlur = Math.max(4, (10 + steps) * uScale * glowAmt);
+          sctx.shadowOffsetX = steps * 0.35;
+          sctx.shadowOffsetY = steps * 0.85 + 2 * uScale;
+          sctx.fillStyle = 'rgba(0, 0, 0, 0.85)';
+          sctx.fillText(text, anchorX, anchorY);
+          sctx.restore();
+        }
+
+        // 2. 3D Extruded Back Layers
+        if (steps > 0) {
+          for (let i = steps; i >= 1; i--) {
+            const ratio = i / steps;
+            if (theme === 'gold') {
+              const r = Math.round(70 + (1 - ratio) * 75);
+              const g = Math.round(36 + (1 - ratio) * 44);
+              const b = Math.round(4 + (1 - ratio) * 10);
+              sctx.fillStyle = `rgb(${r}, ${g}, ${b})`;
+            } else {
+              const c = Math.round(35 + (1 - ratio) * 58);
+              sctx.fillStyle = `rgb(${c}, ${c + 8}, ${c + 22})`;
+            }
+            sctx.fillText(text, anchorX + i * 0.25, anchorY + i * 0.72);
+          }
+        }
+
+        // 3. Ambient Outer Glow
+        if (glowAmt > 0.05) {
+          sctx.save();
+          sctx.shadowColor =
+            theme === 'gold'
+              ? `rgba(255, 196, 46, ${0.48 * glowAmt})`
+              : `rgba(180, 215, 255, ${0.35 * glowAmt})`;
+          sctx.shadowBlur = Math.max(4, 14 * uScale * glowAmt);
+          sctx.fillStyle = theme === 'gold' ? '#f5b82e' : '#e2e8f0';
+          sctx.fillText(text, anchorX, anchorY);
+          sctx.restore();
+        }
+
+        // 4. Metallic Front Face Gradient
+        const faceGrad = sctx.createLinearGradient(0, anchorY - fontSize * 0.52, 0, anchorY + fontSize * 0.52);
+        if (theme === 'gold') {
+          faceGrad.addColorStop(0.0, '#fff9d6');
+          faceGrad.addColorStop(0.28, '#ffe074');
+          faceGrad.addColorStop(0.54, '#f5b01e');
+          faceGrad.addColorStop(0.82, '#c87608');
+          faceGrad.addColorStop(1.0, '#ffe38c');
+        } else {
+          faceGrad.addColorStop(0.0, '#ffffff');
+          faceGrad.addColorStop(0.45, '#e8f0ff');
+          faceGrad.addColorStop(0.75, '#b6c7e2');
+          faceGrad.addColorStop(1.0, '#ffffff');
+        }
+
+        sctx.fillStyle = faceGrad;
+        sctx.fillText(text, anchorX, anchorY);
+
+        // 5. Crisp Top Bevel Highlight
+        sctx.lineWidth = Math.max(0.6, fontSize * 0.025);
+        sctx.strokeStyle =
+          theme === 'gold' ? 'rgba(255, 250, 220, 0.72)' : 'rgba(255, 255, 255, 0.65)';
+        sctx.strokeText(text, anchorX, anchorY);
+
+        // 6. Animated Diagonal Specular Sheen Sweep
+        if (state.fx.shineEnabled && shineCycle >= 0 && shineCycle <= 1) {
+          sctx.save();
+          sctx.globalCompositeOperation = 'source-atop';
+          const bandX = pad - textW * 0.35 + (textW * 1.7) * shineCycle;
+          const bandW = Math.max(24, textW * 0.24);
+          const sheenGrad = sctx.createLinearGradient(
+            bandX - bandW,
+            anchorY - fontSize * 0.6,
+            bandX + bandW,
+            anchorY + fontSize * 0.6
+          );
+          sheenGrad.addColorStop(0, 'rgba(255, 255, 255, 0)');
+          sheenGrad.addColorStop(0.45, 'rgba(255, 255, 255, 0.80)');
+          sheenGrad.addColorStop(0.55, 'rgba(255, 255, 255, 0.92)');
+          sheenGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+
+          sctx.fillStyle = sheenGrad;
+          sctx.fillRect(0, 0, scratchW, scratchH);
+          sctx.restore();
+        }
+
+        sctx.restore();
+
+        // Blit scratch onto main canvas
+        ctx.translate(x, y);
+        ctx.scale(scale, scale);
+        ctx.globalAlpha = clamp01(alpha);
+        ctx.drawImage(
+          textScratchCanvas,
+          0,
+          0,
+          reqW,
+          reqH,
+          -anchorX,
+          -anchorY,
+          scratchW,
+          scratchH
+        );
+        ctx.restore();
+      }
+
+      /**
+       * Measures a wrapped multi-line 3D text block without shrinking the font size.
+       */
+      function measureMultiline3DBlock(ctx, text, opts = {}) {
+        const W = state.resolution.width;
+        const H = state.resolution.height;
+        const uScale = Math.min(W / 400, H / 880);
+        const {
+          maxWidth = W * 0.82,
+          baseSize = 24 * uScale,
+          weight = 800,
+          lineHeightRatio = 1.28,
+        } = opts;
+
+        const fontSize = Math.max(10, baseSize);
+        ctx.save();
+        ctx.font = `${weight} ${fontSize}px Montserrat, sans-serif`;
+        const lines = wrapText(ctx, text, maxWidth);
+        ctx.restore();
+
+        const lineHeight = fontSize * lineHeightRatio;
+        const totalHeight = lines.length > 0 ? (lines.length - 1) * lineHeight + fontSize : 0;
+
+        return { lines, fontSize, lineHeight, totalHeight };
+      }
+
+      /**
+       * Draws a vertically-centered multi-line 3D text block.
+       */
+      function draw3DMultilineText(ctx, text, x, centerY, opts = {}) {
+        const layout = opts._layout || measureMultiline3DBlock(ctx, text, opts);
+        const { lines, fontSize, lineHeight, totalHeight } = layout;
+        if (lines.length === 0) return layout;
+
+        const firstLineY = centerY - totalHeight / 2 + fontSize / 2;
+
+        lines.forEach((line, idx) => {
+          if (!line) return;
+          const lineY = firstLineY + idx * lineHeight;
+          let lineShine = opts.shineCycle ?? -1;
+          if (lineShine >= 0 && lineShine <= 1 && lines.length > 1) {
+            lineShine = clamp01(lineShine * 1.18 - idx * 0.1);
+          }
+
+          draw3DText(ctx, line, x, lineY, {
+            ...opts,
+            baseSize: fontSize,
+            maxWidth: opts.maxWidth,
+            shineCycle: lineShine,
+          });
+        });
+
+        return layout;
+      }
+
+      /* =========================================================================
+       * 8. BACKGROUND, GOLDEN FRAME & 3D VECTOR / PNG LOGO RENDERERS
+       * ========================================================================= */
+      function drawBackground(ctx, t, W, H, uScale) {
+        const th = THEMES[state.fx.theme] || THEMES.royal;
+
+        const lin = ctx.createLinearGradient(0, 0, 0, H);
+        lin.addColorStop(0, th.bgTop);
+        lin.addColorStop(0.5, th.bgMid);
+        lin.addColorStop(1, th.bgBottom);
+        ctx.fillStyle = lin;
+        ctx.fillRect(0, 0, W, H);
+
+        const rad = ctx.createRadialGradient(
+          W * 0.5,
+          H * 0.36,
+          0,
+          W * 0.5,
+          H * 0.42,
+          Math.max(W, H) * 0.65
+        );
+        rad.addColorStop(0, th.radialInner);
+        rad.addColorStop(1, th.radialOuter);
+        ctx.fillStyle = rad;
+        ctx.fillRect(0, 0, W, H);
+
+        // Subtle diagonal animated light streaks
+        ctx.save();
+        ctx.strokeStyle = th.rayColor;
+        ctx.lineWidth = Math.max(1, 1.5 * uScale);
+        for (let i = 0; i < 4; i++) {
+          const offset = ((t * 18 + i * 210) % (W + H)) - H * 0.3;
+          ctx.beginPath();
+          ctx.moveTo(offset, 0);
+          ctx.lineTo(offset - H * 0.45, H);
+          ctx.stroke();
+        }
+        ctx.restore();
+
+        // Twinkling starry particles
+        ctx.save();
+        for (let i = 0; i < STARS.length; i++) {
+          const s = STARS[i];
+          const sx = s.nx * W;
+          const sy = (((s.ny - t * s.speed) % 1) + 1) % 1 * H;
+          const twinkle = 0.25 + 0.75 * (0.5 + 0.5 * Math.sin(t * s.twinkleFreq + s.phase));
+          const radPx = s.r * uScale;
+
+          ctx.globalAlpha = twinkle * 0.85;
+          ctx.fillStyle = s.isGold ? '#ffe394' : '#cbd5e1';
+
+          if (s.isCross) {
+            const arm = radPx * 2.4;
+            ctx.beginPath();
+            ctx.moveTo(sx - arm, sy);
+            ctx.lineTo(sx + arm, sy);
+            ctx.moveTo(sx, sy - arm);
+            ctx.lineTo(sx, sy + arm);
+            ctx.strokeStyle = s.isGold ? 'rgba(255, 227, 148, 0.9)' : 'rgba(226, 232, 240, 0.8)';
+            ctx.lineWidth = Math.max(0.7, 0.9 * uScale);
+            ctx.stroke();
+          } else {
+            ctx.beginPath();
+            ctx.arc(sx, sy, radPx, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+        ctx.restore();
+      }
+
+      function roundedRectPath(ctx, x, y, w, h, r) {
+        const radius = Math.min(r, w / 2, h / 2);
+        ctx.beginPath();
+        ctx.moveTo(x + radius, y);
+        ctx.lineTo(x + w - radius, y);
+        ctx.quadraticCurveTo(x + w, y, x + w, y + radius);
+        ctx.lineTo(x + w, y + h - radius);
+        ctx.quadraticCurveTo(x + w, y + h, x + w - radius, y + h);
+        ctx.lineTo(x + radius, y + h);
+        ctx.quadraticCurveTo(x, y + h, x, y + h - radius);
+        ctx.lineTo(x, y + radius);
+        ctx.quadraticCurveTo(x, y, x + radius, y);
+        ctx.closePath();
+      }
+
+      function drawGoldenFrame(ctx, t, W, H, uScale) {
+        const pad = Math.max(6, Math.round(10 * uScale));
+        const innerPad = pad + Math.max(3, Math.round(4.5 * uScale));
+        const rOuter = Math.max(8, 14 * uScale);
+        const rInner = Math.max(5, 10 * uScale);
+
+        const fw = W - pad * 2;
+        const fh = H - pad * 2;
+
+        ctx.save();
+
+        const goldGrad = ctx.createLinearGradient(0, 0, W, H);
+        goldGrad.addColorStop(0.0, '#b87414');
+        goldGrad.addColorStop(0.25, '#ffe38f');
+        goldGrad.addColorStop(0.5, '#f5b01e');
+        goldGrad.addColorStop(0.75, '#fff3bf');
+        goldGrad.addColorStop(1.0, '#a6620b');
+
+        roundedRectPath(ctx, pad, pad, fw, fh, rOuter);
+        ctx.strokeStyle = goldGrad;
+        ctx.lineWidth = Math.max(1.8, 2.5 * uScale);
+        ctx.stroke();
+
+        roundedRectPath(ctx, innerPad, innerPad, W - innerPad * 2, H - innerPad * 2, rInner);
+        ctx.strokeStyle = 'rgba(255, 224, 130, 0.35)';
+        ctx.lineWidth = Math.max(0.8, 1.1 * uScale);
+        ctx.stroke();
+
+        // Traveling golden light glints along the perimeter
+        const perimeter = 2 * (fw + fh);
+        const drawOrb = (phaseOffset) => {
+          const dist = ((((t * 0.14 + phaseOffset) % 1) + 1) % 1) * perimeter;
+          let ox = pad;
+          let oy = pad;
+          if (dist < fw) {
+            ox = pad + dist;
+            oy = pad;
+          } else if (dist < fw + fh) {
+            ox = pad + fw;
+            oy = pad + (dist - fw);
+          } else if (dist < 2 * fw + fh) {
+            ox = pad + fw - (dist - (fw + fh));
+            oy = pad + fh;
+          } else {
+            ox = pad;
+            oy = pad + fh - (dist - (2 * fw + fh));
+          }
+
+          const orbR = Math.max(14, 28 * uScale);
+          const orbGrad = ctx.createRadialGradient(ox, oy, 0, ox, oy, orbR);
+          orbGrad.addColorStop(0, 'rgba(255, 255, 235, 1)');
+          orbGrad.addColorStop(0.3, 'rgba(255, 215, 95, 0.72)');
+          orbGrad.addColorStop(1, 'rgba(245, 184, 46, 0)');
+          ctx.fillStyle = orbGrad;
+          ctx.beginPath();
+          ctx.arc(ox, oy, orbR, 0, Math.PI * 2);
+          ctx.fill();
+        };
+
+        drawOrb(0);
+        drawOrb(0.5);
+
+        ctx.restore();
+      }
+
+      /**
+       * Returns the exact rendered pixel dimensions of the logo at a given scaleFactor
+       * (accounting for custom PNG aspect ratio or default 112px vector emblem).
+       */
+      function getLogoRenderedHeight(scaleFactor) {
+        if (customLogoImg && customLogoImg.complete && customLogoImg.naturalWidth > 0) {
+          const maxBox = 122;
+          const ratio = Math.min(maxBox / customLogoImg.naturalWidth, maxBox / customLogoImg.naturalHeight);
+          return customLogoImg.naturalHeight * ratio * scaleFactor;
+        }
+        return 112 * scaleFactor;
+      }
+
+      /**
+       * Draws uploaded PNG/SVG logo or a crisp 3D metallic gold shield + fuel droplet emblem.
+       * Note: Also clamps horizontal width cleanly inside safeMaxW if needed.
+       */
+      function drawLogo(ctx, cx, cy, scaleFactor, alpha, flareAlpha = 0, safeMaxW = null) {
+        if (alpha <= 0.005) return;
+
+        let finalScale = scaleFactor;
+        if (safeMaxW && safeMaxW > 0) {
+          let baseW = 92;
+          if (customLogoImg && customLogoImg.complete && customLogoImg.naturalWidth > 0) {
+            const maxBox = 122;
+            const ratio = Math.min(maxBox / customLogoImg.naturalWidth, maxBox / customLogoImg.naturalHeight);
+            baseW = customLogoImg.naturalWidth * ratio;
+          }
+          if (baseW * finalScale > safeMaxW) {
+            finalScale = safeMaxW / baseW;
+          }
+        }
+
+        ctx.save();
+        ctx.translate(cx, cy);
+        ctx.scale(finalScale, finalScale);
+        ctx.globalAlpha = clamp01(alpha);
+
+        // Optional golden lens flare behind logo
+        if (flareAlpha > 0.02) {
+          const flareR = 96;
+          const fg = ctx.createRadialGradient(0, 0, 0, 0, 0, flareR);
+          fg.addColorStop(0, `rgba(255, 232, 148, ${0.55 * flareAlpha})`);
+          fg.addColorStop(0.45, `rgba(245, 184, 46, ${0.22 * flareAlpha})`);
+          fg.addColorStop(1, 'rgba(245, 184, 46, 0)');
+          ctx.fillStyle = fg;
+          ctx.beginPath();
+          ctx.arc(0, 0, flareR, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        if (customLogoImg && customLogoImg.complete && customLogoImg.naturalWidth > 0) {
+          const maxBox = 122;
+          const ratio = Math.min(maxBox / customLogoImg.naturalWidth, maxBox / customLogoImg.naturalHeight);
+          const dw = customLogoImg.naturalWidth * ratio;
+          const dh = customLogoImg.naturalHeight * ratio;
+          ctx.shadowColor = 'rgba(0, 0, 0, 0.55)';
+          ctx.shadowBlur = 16;
+          ctx.shadowOffsetY = 6;
+          ctx.drawImage(customLogoImg, -dw / 2, -dh / 2, dw, dh);
+        } else {
+          // Built-in 3D Metallic Gold Shield + Fuel Droplet Emblem
+          ctx.shadowColor = 'rgba(0, 0, 0, 0.65)';
+          ctx.shadowBlur = 14;
+          ctx.shadowOffsetY = 6;
+
+          ctx.beginPath();
+          ctx.moveTo(0, -54);
+          ctx.lineTo(44, -36);
+          ctx.lineTo(38, 12);
+          ctx.quadraticCurveTo(32, 42, 0, 56);
+          ctx.quadraticCurveTo(-32, 42, -38, 12);
+          ctx.lineTo(-44, -36);
+          ctx.closePath();
+
+          const shieldGrad = ctx.createLinearGradient(-44, -54, 44, 56);
+          shieldGrad.addColorStop(0, '#fff5c0');
+          shieldGrad.addColorStop(0.35, '#f5b82e');
+          shieldGrad.addColorStop(0.7, '#b4690e');
+          shieldGrad.addColorStop(1, '#ffe082');
+          ctx.fillStyle = shieldGrad;
+          ctx.fill();
+
+          ctx.shadowBlur = 0;
+          ctx.shadowOffsetY = 0;
+          ctx.beginPath();
+          ctx.moveTo(0, -45);
+          ctx.lineTo(36, -30);
+          ctx.lineTo(31, 10);
+          ctx.quadraticCurveTo(26, 35, 0, 47);
+          ctx.quadraticCurveTo(-26, 35, -31, 10);
+          ctx.lineTo(-36, -30);
+          ctx.closePath();
+
+          const innerGrad = ctx.createLinearGradient(0, -45, 0, 47);
+          innerGrad.addColorStop(0, '#12317a');
+          innerGrad.addColorStop(1, '#040c24');
+          ctx.fillStyle = innerGrad;
+          ctx.fill();
+
+          // 3D Golden Fuel Droplet
+          ctx.beginPath();
+          ctx.moveTo(0, -28);
+          ctx.bezierCurveTo(18, -4, 24, 8, 22, 18);
+          ctx.arc(0, 16, 22, 0.08, Math.PI - 0.08, false);
+          ctx.bezierCurveTo(-24, 8, -18, -4, 0, -28);
+          ctx.closePath();
+
+          const dropGrad = ctx.createLinearGradient(-16, -24, 18, 36);
+          dropGrad.addColorStop(0, '#fff9d6');
+          dropGrad.addColorStop(0.35, '#ffcf4d');
+          dropGrad.addColorStop(0.75, '#e08a0b');
+          dropGrad.addColorStop(1, '#9c4e04');
+          ctx.fillStyle = dropGrad;
+          ctx.fill();
+
+          // Specular Crescent Highlight inside Drop
+          ctx.beginPath();
+          ctx.arc(-6, 14, 11, Math.PI * 0.72, Math.PI * 1.25);
+          ctx.strokeStyle = 'rgba(255, 255, 255, 0.78)';
+          ctx.lineWidth = 3;
+          ctx.lineCap = 'round';
+          ctx.stroke();
+        }
+
+        ctx.restore();
+      }
+
+      /* =========================================================================
+       * 9. MAIN 20-SECOND CHOREOGRAPHY
+       *    - Scene 1 (0.0s – 4.5s): Optional Logo + 3D Intro Title + Divider + Subtitle
+       *    - Scene 2 (4.5s – 9.0s): Logo Reveal + 3D Brand Name + Brand Subtitle
+       *    - Scene 3 (9.0s – 20.0s): Header Logo + Price Header + Rolling Fuel Prices
+       * ========================================================================= */
+      function renderFrame(t) {
+        const W = state.resolution.width;
+        const H = state.resolution.height;
+        const ss = getSupersampleFactor();
+        const uScale = Math.min(W / 400, H / 880);
+
+        const framePad = Math.max(6, Math.round(10 * uScale));
+        const safeTextMaxW = Math.max(90, W - framePad * 2 - 34 * uScale);
+        const safeLogoMaxW = Math.max(80, W - framePad * 2 - 44 * uScale);
+
+        const outerPad = Math.max(14, 24 * uScale);
+        const contentW = Math.min(W - outerPad * 2, H * 0.78);
+        const leftX = (W - contentW) / 2;
+        const rightX = leftX + contentW;
+
+        // Completely decoupled multipliers!
+        const logoImgMul = state.sizes.logoScale / 100;       // ONLY scales logo graphic
+        const brandTextMul = state.sizes.brandTextScale / 100; // ONLY scales Brand Name & Brand Subtitle
+        const introMul = state.sizes.introScale / 100;
+        const introSubMul = state.sizes.introSubScale / 100;
+        const labelMul = state.sizes.fuelLabelScale / 100;
+        const priceMul = state.sizes.priceScale / 100;
+        const spacingMul = state.sizes.rowSpacing / 100;
+
+        const ctx = renderCtx;
+        ctx.save();
+        ctx.setTransform(ss, 0, 0, ss, 0, 0);
+
+        // 1. Background & Golden Border
+        drawBackground(ctx, t, W, H, uScale);
+        drawGoldenFrame(ctx, t, W, H, uScale);
+
+        // ---------------------------------------------------------------------
+        // SCENE 1: INTRO (0.0s – 4.5s)
+        // Dynamically centers: [Optional Logo] + Intro Title + Divider + Subtitle
+        // ---------------------------------------------------------------------
+        const introFadeOut = 1 - easeInOutCubic(progress(t, 3.85, 4.5));
+        if (introFadeOut > 0.008 && t < 4.6) {
+          const titleOpts = {
+            maxWidth: safeTextMaxW,
+            baseSize: 36 * uScale * introMul,
+            weight: 900,
+            lineHeightRatio: 1.22,
+          };
+          const subOpts = {
+            maxWidth: safeTextMaxW,
+            baseSize: 21 * uScale * introSubMul,
+            weight: 800,
+            lineHeightRatio: 1.32,
+          };
+
+          const titleLayout = measureMultiline3DBlock(ctx, state.texts.introTitle || '', titleOpts);
+          const subLayout = measureMultiline3DBlock(ctx, state.texts.introSub || '', subOpts);
+
+          const hasTitle = titleLayout.lines.length > 0;
+          const hasSub = subLayout.lines.length > 0;
+          const showIntroLogo = !!state.showLogoInIntro;
+
+          // Compute exact logo height (clamped if width hits safeLogoMaxW)
+          const introLogoBaseScale = uScale * logoImgMul * 0.9;
+          const introLogoH = showIntroLogo
+            ? Math.min(getLogoRenderedHeight(introLogoBaseScale), H * 0.36)
+            : 0;
+          const logoToTitleGap = showIntroLogo && (hasTitle || hasSub) ? Math.max(18, 28 * uScale) : 0;
+          const dividerGap = hasTitle && hasSub ? Math.max(16, 24 * uScale) : 0;
+
+          const totalIntroH =
+            introLogoH +
+            logoToTitleGap +
+            titleLayout.totalHeight +
+            dividerGap * 2 +
+            subLayout.totalHeight;
+
+          const innerTopLimit = framePad + 24 * uScale;
+          const blockTopY = Math.max(innerTopLimit, H * 0.5 - totalIntroH / 2);
+
+          let cursorY = blockTopY;
+
+          // 1A. Optional Intro Logo above Title
+          if (showIntroLogo) {
+            const introLogoCenterY = cursorY + introLogoH / 2;
+            const logoP = progress(t, 0.1, 0.9);
+            if (logoP > 0) {
+              const popScale = 0.78 + 0.22 * easeOutBack(logoP);
+              const flare = Math.sin(progress(t, 0.15, 1.4) * Math.PI);
+              drawLogo(
+                ctx,
+                W / 2,
+                introLogoCenterY,
+                introLogoBaseScale * popScale,
+                easeOutCubic(logoP) * introFadeOut,
+                flare * introFadeOut,
+                safeLogoMaxW
+              );
+            }
+            cursorY += introLogoH + logoToTitleGap;
+          }
+
+          // 1B. Multi-line 3D Gold Intro Title
+          const titleCenterY = cursorY + titleLayout.totalHeight / 2;
+          const titleP = progress(t, 0.35, 1.2);
+          if (hasTitle && titleP > 0) {
+            const popScale = 0.84 + 0.16 * easeOutBack(titleP);
+            const shine = progress(t, 1.4, 2.8);
+            draw3DMultilineText(ctx, state.texts.introTitle || '', W / 2, titleCenterY, {
+              ...titleOpts,
+              _layout: titleLayout,
+              align: 'center',
+              theme: 'gold',
+              alpha: easeOutCubic(titleP) * introFadeOut,
+              scale: popScale,
+              shineCycle: shine > 0 && shine < 1 ? shine : -1,
+            });
+          }
+          cursorY += titleLayout.totalHeight;
+
+          // 1C. Glowing Golden Divider Line
+          const dividerY = cursorY + dividerGap;
+          const divP = easeOutCubic(progress(t, 0.85, 1.55));
+          if (hasTitle && hasSub && divP > 0) {
+            const span = Math.min(safeTextMaxW * 0.42, 145 * uScale) * divP;
+            ctx.save();
+            ctx.globalAlpha = divP * introFadeOut;
+            const lg = ctx.createLinearGradient(W / 2 - span, dividerY, W / 2 + span, dividerY);
+            lg.addColorStop(0, 'rgba(245, 184, 46, 0)');
+            lg.addColorStop(0.5, 'rgba(255, 236, 158, 0.98)');
+            lg.addColorStop(1, 'rgba(245, 184, 46, 0)');
+            ctx.strokeStyle = lg;
+            ctx.lineWidth = Math.max(1.4, 2.2 * uScale);
+            ctx.shadowColor = 'rgba(255, 210, 80, 0.8)';
+            ctx.shadowBlur = 10 * uScale;
+            ctx.beginPath();
+            ctx.moveTo(W / 2 - span, dividerY);
+            ctx.lineTo(W / 2 + span, dividerY);
+            ctx.stroke();
+            ctx.restore();
+          }
+
+          // 1D. Multi-line 3D Silver Intro Subtitle
+          const subCenterY = dividerY + dividerGap + subLayout.totalHeight / 2;
+          const subP = easeOutCubic(progress(t, 1.15, 1.95));
+          if (hasSub && subP > 0) {
+            const dy = (1 - subP) * 18 * uScale;
+            draw3DMultilineText(ctx, state.texts.introSub || '', W / 2, subCenterY + dy, {
+              ...subOpts,
+              _layout: subLayout,
+              align: 'center',
+              theme: 'silver',
+              depth: state.fx.depth * 0.55 * uScale,
+              alpha: subP * introFadeOut,
+            });
+          }
+        }
+
+        // ---------------------------------------------------------------------
+        // SCENE 2: BRAND / LOGO REVEAL (4.5s – 9.0s) & GLIDE TO HEADER
+        // logoImgMul ONLY scales Logo; brandTextMul ONLY scales Brand texts!
+        // ---------------------------------------------------------------------
+        if (t >= 4.35) {
+          const logoInP = easeOutCubic(progress(t, 4.5, 5.45));
+          const glideP = easeInOutCubic(progress(t, 8.1, 9.05));
+
+          const brandTitleOpts = {
+            maxWidth: safeTextMaxW,
+            baseSize: 34 * uScale * brandTextMul,
+            weight: 900,
+            lineHeightRatio: 1.2,
+          };
+          const brandSubOpts = {
+            maxWidth: safeTextMaxW,
+            baseSize: 18 * uScale * brandTextMul,
+            weight: 700,
+            lineHeightRatio: 1.32,
+          };
+
+          const brandSubText = (state.texts.brandSub || '').trim();
+          const bTitleLayout = measureMultiline3DBlock(ctx, state.texts.brandName || '', brandTitleOpts);
+          const bSubLayout = measureMultiline3DBlock(ctx, brandSubText, brandSubOpts);
+
+          const brandLogoBaseScale = uScale * logoImgMul;
+          const logoVisualH = Math.min(getLogoRenderedHeight(brandLogoBaseScale), H * 0.42);
+          const gap1 = bTitleLayout.lines.length > 0 ? Math.max(18, 24 * uScale) : 0;
+          const gap2 = bSubLayout.lines.length > 0 ? Math.max(12, 16 * uScale) : 0;
+          const totalBrandH = logoVisualH + gap1 + bTitleLayout.totalHeight + gap2 + bSubLayout.totalHeight;
+
+          const innerTopLimit = framePad + 24 * uScale;
+          const blockTopY = Math.max(innerTopLimit, H * 0.5 - totalBrandH / 2);
+
+          const startLogoY = blockTopY + logoVisualH / 2;
+          const headerLogoY = H * 0.088;
+          const logoY = startLogoY + (headerLogoY - startLogoY) * glideP;
+
+          // Keep header logo neatly proportioned during Scene 3 even if logoScale is very large
+          const headerTargetScale = uScale * Math.min(logoImgMul, 1.35) * 0.56;
+          const revealScale = brandLogoBaseScale * (0.76 + 0.24 * easeOutBack(logoInP));
+          const currentLogoScale = revealScale + (headerTargetScale - revealScale) * glideP;
+          const flareAlpha = Math.sin(progress(t, 4.55, 6.0) * Math.PI);
+
+          drawLogo(ctx, W / 2, logoY, currentLogoScale, logoInP, flareAlpha, safeLogoMaxW);
+
+          const brandFadeOut = 1 - easeInOutCubic(progress(t, 7.85, 8.55));
+          if (brandFadeOut > 0.008 && t < 8.65) {
+            const brandIn = progress(t, 4.9, 5.7);
+            const brandTitleY = startLogoY + logoVisualH / 2 + gap1 + bTitleLayout.totalHeight / 2;
+
+            if (bTitleLayout.lines.length > 0 && brandIn > 0) {
+              const bShine = progress(t, 5.7, 7.1);
+              draw3DMultilineText(ctx, state.texts.brandName || '', W / 2, brandTitleY, {
+                ...brandTitleOpts,
+                _layout: bTitleLayout,
+                align: 'center',
+                theme: 'gold',
+                alpha: easeOutCubic(brandIn) * brandFadeOut,
+                scale: 0.86 + 0.14 * easeOutBack(brandIn),
+                shineCycle: bShine > 0 && bShine < 1 ? bShine : -1,
+              });
+            }
+
+            const brandSubIn = easeOutCubic(progress(t, 5.3, 6.1));
+            if (bSubLayout.lines.length > 0 && brandSubIn > 0) {
+              const bSubY = brandTitleY + bTitleLayout.totalHeight / 2 + gap2 + bSubLayout.totalHeight / 2;
+              const dy = (1 - brandSubIn) * 14 * uScale;
+              draw3DMultilineText(ctx, brandSubText, W / 2, bSubY + dy, {
+                ...brandSubOpts,
+                _layout: bSubLayout,
+                align: 'center',
+                theme: 'silver',
+                depth: state.fx.depth * 0.5 * uScale,
+                alpha: brandSubIn * brandFadeOut,
+              });
+            }
+          }
+        }
+
+        // ---------------------------------------------------------------------
+        // SCENE 3: PRICE BOARD (9.0s – 20.0s)
+        // ---------------------------------------------------------------------
+        if (t >= 8.75) {
+          const th = THEMES[state.fx.theme] || THEMES.royal;
+
+          // Price Header ("YOQILG'I NARXLARI") — completely independent of logoScale!
+          const headerP = progress(t, 8.95, 9.6);
+          if (headerP > 0) {
+            const headerEase = easeOutCubic(headerP);
+            const hCycle = ((t - 9.5) % 3.8) / 0.95;
+            draw3DText(ctx, state.texts.priceHeader || '', W / 2, H * 0.175, {
+              maxWidth: safeTextMaxW,
+              baseSize: 26 * uScale,
+              weight: 900,
+              align: 'center',
+              theme: 'gold',
+              alpha: headerEase,
+              scale: 0.9 + 0.1 * headerEase,
+              shineCycle: hCycle >= 0 && hCycle <= 1 ? hCycle : -1,
+            });
+          }
+
+          // Active Fuel Rows
+          const activeFuels = state.fuels.filter((f) => f.enabled);
+          const count = activeFuels.length;
+
+          if (count > 0 && t >= 9.15) {
+            const topArea = H * 0.23;
+            const bottomArea = H * 0.915;
+            const availH = bottomArea - topArea;
+            const baseStep = count === 1 ? Math.min(availH * 0.35, 110 * uScale) : availH / count;
+            const rowStep = baseStep * spacingMul;
+            const totalBlockH = rowStep * count;
+            const startY = topArea + (availH - totalBlockH) / 2 + rowStep * 0.5;
+
+            const cardH = Math.min(rowStep * 0.82, 74 * uScale);
+            const cardRadius = Math.max(8, 12 * uScale);
+            const innerPadX = Math.max(10, 16 * uScale);
+
+            const stagger = count <= 7 ? 0.38 : Math.max(0.22, 2.5 / count);
+            const defaultLabelPx = (count > 7 ? 22 : 26) * uScale * labelMul;
+            const defaultPricePx = (count > 7 ? 26 : 32) * uScale * priceMul;
+
+            activeFuels.forEach((fuel, idx) => {
+              const rowStart = 9.2 + idx * stagger;
+              const appearP = easeOutCubic(progress(t, rowStart, rowStart + 0.48));
+              if (appearP <= 0) return;
+
+              const y = startY + idx * rowStep;
+              const slideY = (1 - appearP) * 16 * uScale;
+              const cy = y + slideY;
+
+              // Glassmorphism + Gold-Accented Row Card
+              ctx.save();
+              ctx.globalAlpha = appearP;
+              roundedRectPath(ctx, leftX, cy - cardH / 2, contentW, cardH, cardRadius);
+              ctx.fillStyle = th.cardBg;
+              ctx.fill();
+
+              const borderGrad = ctx.createLinearGradient(leftX, cy, rightX, cy);
+              borderGrad.addColorStop(0, 'rgba(245, 184, 46, 0.55)');
+              borderGrad.addColorStop(0.5, th.cardBorder);
+              borderGrad.addColorStop(1, 'rgba(255, 224, 130, 0.65)');
+              ctx.strokeStyle = borderGrad;
+              ctx.lineWidth = Math.max(1, 1.3 * uScale);
+              ctx.stroke();
+
+              // Left Gold Accent Bar
+              const barH = cardH * 0.54;
+              roundedRectPath(ctx, leftX + 4 * uScale, cy - barH / 2, 3.2 * uScale, barH, 2 * uScale);
+              ctx.fillStyle = '#f5b82e';
+              ctx.fill();
+              ctx.restore();
+
+              // Smooth Number Counter Roll-up
+              const rollP = easeOutCubic(progress(t, rowStart, rowStart + 0.95));
+              const targetPrice = Math.max(0, Number(fuel.price) || 0);
+              let shownPrice = targetPrice;
+              if (rollP < 1 && targetPrice > 0) {
+                const rawVal = targetPrice * rollP;
+                shownPrice = targetPrice >= 1000 ? Math.round(rawVal / 100) * 100 : Math.round(rawVal);
+              }
+
+              // Periodic diagonal sheen cascade
+              let priceShine = -1;
+              let labelShine = -1;
+              if (t >= 12.6) {
+                const wavePeriod = 3.8;
+                const localT = (t - 12.6 - idx * 0.16) % wavePeriod;
+                if (localT >= 0 && localT <= 0.85) priceShine = localT / 0.85;
+                const labelT = (t - 12.45 - idx * 0.16) % wavePeriod;
+                if (labelT >= 0 && labelT <= 0.75) labelShine = labelT / 0.75;
+              }
+
+              // Left: 3D Metallic Silver Fuel Name
+              draw3DText(ctx, fuel.name || '', leftX + innerPadX, cy, {
+                maxWidth: contentW * 0.48,
+                baseSize: defaultLabelPx,
+                weight: 800,
+                align: 'left',
+                theme: 'silver',
+                depth: Math.min(5, state.fx.depth * 0.75) * uScale,
+                alpha: appearP,
+                shineCycle: labelShine,
+              });
+
+              // Right: 3D Metallic Gold Price
+              draw3DText(ctx, formatPrice(shownPrice), rightX - innerPadX, cy, {
+                maxWidth: contentW * 0.44,
+                baseSize: defaultPricePx,
+                weight: 900,
+                align: 'right',
+                theme: 'gold',
+                depth: state.fx.depth * uScale,
+                alpha: appearP,
+                shineCycle: priceShine,
+              });
+            });
+          }
+
+          // Footer ("so'm / litr")
+          const footerP = easeOutCubic(progress(t, 11.8, 12.6));
+          if (footerP > 0) {
+            draw3DText(ctx, state.texts.footerUnit || '', W / 2, H * 0.955, {
+              maxWidth: contentW * 0.92,
+              baseSize: 16 * uScale,
+              weight: 700,
+              align: 'center',
+              theme: 'silver',
+              depth: Math.min(2, state.fx.depth) * uScale,
+              alpha: footerP * 0.92,
+            });
+          }
+        }
+
+        ctx.restore();
+
+        // Downscale 2x supersampled buffer cleanly to exact target W×H
+        previewCtx.imageSmoothingEnabled = true;
+        previewCtx.imageSmoothingQuality = 'high';
+        previewCtx.clearRect(0, 0, W, H);
+        previewCtx.drawImage(renderCanvas, 0, 0, renderCanvas.width, renderCanvas.height, 0, 0, W, H);
+      }
+
+      /* =========================================================================
+       * 10. UI BUILDERS & EVENT BINDINGS
+       * ========================================================================= */
+      function renderFuelListUI() {
+        fuelListContainer.innerHTML = '';
+
+        state.fuels.forEach((fuel, idx) => {
+          const row = document.createElement('div');
+          row.className =
+            'flex items-center gap-2 p-2.5 rounded-xl bg-slate-900/80 border border-studio-border/80 transition hover:border-amber-400/40';
+
+          const cb = document.createElement('input');
+          cb.type = 'checkbox';
+          cb.checked = fuel.enabled;
+          cb.className = 'w-4 h-4 accent-amber-400 rounded cursor-pointer shrink-0';
+          cb.title = "Ko'rsatish / Yashirish";
+          cb.addEventListener('change', () => {
+            state.fuels[idx].enabled = cb.checked;
+            saveState();
+            renderFrame(currentTime);
+          });
+
+          const nameInput = document.createElement('input');
+          nameInput.type = 'text';
+          nameInput.value = fuel.name;
+          nameInput.placeholder = "Yoqilg'i nomi";
+          nameInput.className =
+            'flex-1 min-w-0 bg-slate-950/90 border border-studio-border focus:border-amber-400 rounded-lg px-2.5 py-1.5 text-xs font-semibold text-white outline-none transition';
+          nameInput.addEventListener('input', () => {
+            state.fuels[idx].name = nameInput.value;
+            saveState();
+            renderFrame(currentTime);
+          });
+
+          const priceInput = document.createElement('input');
+          priceInput.type = 'number';
+          priceInput.min = '0';
+          priceInput.step = '100';
+          priceInput.value = fuel.price;
+          priceInput.placeholder = 'Narx';
+          priceInput.className =
+            'w-24 bg-slate-950/90 border border-studio-border focus:border-amber-400 rounded-lg px-2.5 py-1.5 text-xs font-mono font-bold text-amber-300 text-right outline-none transition shrink-0';
+          priceInput.addEventListener('input', () => {
+            state.fuels[idx].price = Math.max(0, Number(priceInput.value) || 0);
+            saveState();
+            renderFrame(currentTime);
+          });
+
+          const delBtn = document.createElement('button');
+          delBtn.type = 'button';
+          delBtn.className =
+            'w-7 h-7 rounded-lg bg-slate-800/90 hover:bg-rose-500/25 text-slate-400 hover:text-rose-300 flex items-center justify-center transition cursor-pointer shrink-0';
+          delBtn.title = "Qatorni o'chirish";
+          delBtn.innerHTML =
+            '<svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 6L6 18M6 6l12 12"/></svg>';
+          delBtn.addEventListener('click', () => {
+            if (state.fuels.length <= 1) {
+              showToast("Kamida 1 ta yoqilg'i qatori qolishi kerak");
+              return;
+            }
+            state.fuels.splice(idx, 1);
+            saveState();
+            renderFuelListUI();
+            renderFrame(currentTime);
+          });
+
+          row.appendChild(cb);
+          row.appendChild(nameInput);
+          row.appendChild(priceInput);
+          row.appendChild(delBtn);
+          fuelListContainer.appendChild(row);
+        });
+      }
+
+      function syncLogoUI() {
+        if (state.logoDataUrl) {
+          customLogoImg = new Image();
+          customLogoImg.onload = () => renderFrame(currentTime);
+          customLogoImg.src = state.logoDataUrl;
+
+          logoPreviewBox.innerHTML = '';
+          const thumb = document.createElement('img');
+          thumb.src = state.logoDataUrl;
+          thumb.alt = 'Logo';
+          thumb.className = 'w-full h-full object-contain p-1';
+          logoPreviewBox.appendChild(thumb);
+          removeLogoBtn.classList.remove('hidden');
+        } else {
+          customLogoImg = null;
+          logoPreviewBox.innerHTML =
+            '<span class="text-[10px] text-slate-500 text-center px-1">Standart emblema</span>';
+          removeLogoBtn.classList.add('hidden');
+        }
+      }
+
+      function syncAllControlsFromState() {
+        videoWidthInput.value = state.resolution.width;
+        videoHeightInput.value = state.resolution.height;
+
+        // 7 Independent Sliders
+        logoScaleRange.value = state.sizes.logoScale;
+        logoScaleVal.textContent = `${state.sizes.logoScale}%`;
+        brandTextScaleRange.value = state.sizes.brandTextScale;
+        brandTextScaleVal.textContent = `${state.sizes.brandTextScale}%`;
+        introScaleRange.value = state.sizes.introScale;
+        introScaleVal.textContent = `${state.sizes.introScale}%`;
+        introSubScaleRange.value = state.sizes.introSubScale;
+        introSubScaleVal.textContent = `${state.sizes.introSubScale}%`;
+        fuelLabelScaleRange.value = state.sizes.fuelLabelScale;
+        fuelLabelScaleVal.textContent = `${state.sizes.fuelLabelScale}%`;
+        priceScaleRange.value = state.sizes.priceScale;
+        priceScaleVal.textContent = `${state.sizes.priceScale}%`;
+        rowSpacingRange.value = state.sizes.rowSpacing;
+        rowSpacingVal.textContent = `${state.sizes.rowSpacing}%`;
+
+        // Texts & Intro Logo Toggle
+        showLogoInIntroCheckbox.checked = !!state.showLogoInIntro;
+        introTitleInput.value = state.texts.introTitle;
+        introSubInput.value = state.texts.introSub;
+        brandNameInput.value = state.texts.brandName;
+        brandSubInput.value = state.texts.brandSub;
+        priceHeaderInput.value = state.texts.priceHeader;
+        footerUnitInput.value = state.texts.footerUnit;
+
+        // 3D & Design
+        depthRange.value = state.fx.depth;
+        depthVal.textContent = `${state.fx.depth} px`;
+        shineEnabledCheckbox.checked = !!state.fx.shineEnabled;
+        glowRange.value = state.fx.glow;
+        glowVal.textContent = `${state.fx.glow}%`;
+        supersampleCheckbox.checked = !!state.fx.supersample;
+
+        themeBtns.forEach((btn) => {
+          const active = btn.dataset.theme === state.fx.theme;
+          btn.classList.toggle('border-amber-400', active);
+          btn.classList.toggle('bg-amber-500/15', active);
+          btn.classList.toggle('border-studio-border', !active);
+          btn.classList.toggle('bg-slate-950/70', !active);
+        });
+
+        fpsBtns.forEach((btn) => {
+          const active = Number(btn.dataset.fps) === Number(state.fx.fps);
+          btn.classList.toggle('bg-amber-500/20', active);
+          btn.classList.toggle('text-amber-300', active);
+          btn.classList.toggle('border-amber-400/50', active);
+          btn.classList.toggle('bg-slate-950/70', !active);
+          btn.classList.toggle('text-slate-400', !active);
+          btn.classList.toggle('border-studio-border', !active);
+        });
+
+        renderFuelListUI();
+        syncLogoUI();
+        syncCanvasDimensions();
+      }
+
+      // Tab Switching
+      tabBtns.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const target = btn.dataset.tab;
+          tabBtns.forEach((b) => {
+            const isAct = b.dataset.tab === target;
+            b.classList.toggle('bg-amber-500/20', isAct);
+            b.classList.toggle('text-amber-300', isAct);
+            b.classList.toggle('border-amber-400/40', isAct);
+            b.classList.toggle('text-slate-400', !isAct);
+            b.classList.toggle('border-transparent', !isAct);
+          });
+          tabPanels.forEach((panel) => {
+            panel.classList.toggle('hidden', panel.id !== `tab-${target}`);
+          });
+        });
+      });
+
+      // Fuel List Controls
+      addFuelBtn.addEventListener('click', () => {
+        if (state.fuels.length >= 12) {
+          showToast("Maksimum 12 ta qator qo'shish mumkin");
+          return;
+        }
+        state.fuels.push({
+          id: `f_${Date.now()}`,
+          name: "Yangi yoqilg'i",
+          price: 10000,
+          enabled: true,
+        });
+        saveState();
+        renderFuelListUI();
+        renderFrame(currentTime);
+      });
+
+      resetFuelsBtn.addEventListener('click', () => {
+        state.fuels = DEFAULT_FUELS.map((f) => ({ ...f }));
+        saveState();
+        renderFuelListUI();
+        renderFrame(currentTime);
+        showToast('Standart narxlar tiklandi');
+      });
+
+      // Resolution Controls
+      function applyResolution(w, h) {
+        state.resolution.width = clampInt(w, 160, 2160);
+        state.resolution.height = clampInt(h, 160, 2160);
+        videoWidthInput.value = state.resolution.width;
+        videoHeightInput.value = state.resolution.height;
+        saveState();
+        syncCanvasDimensions();
+        renderFrame(currentTime);
+      }
+
+      videoWidthInput.addEventListener('change', () => {
+        applyResolution(videoWidthInput.value, videoHeightInput.value);
+      });
+      videoHeightInput.addEventListener('change', () => {
+        applyResolution(videoWidthInput.value, videoHeightInput.value);
+      });
+
+      presetBtns.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const [w, h] = btn.dataset.preset.split('x').map(Number);
+          applyResolution(w, h);
+          showToast(`O'lcham: ${w}×${h} px`);
+        });
+      });
+
+      // All 7 Independent Sliders
+      [
+        [logoScaleRange, logoScaleVal, 'logoScale'],
+        [brandTextScaleRange, brandTextScaleVal, 'brandTextScale'],
+        [introScaleRange, introScaleVal, 'introScale'],
+        [introSubScaleRange, introSubScaleVal, 'introSubScale'],
+        [fuelLabelScaleRange, fuelLabelScaleVal, 'fuelLabelScale'],
+        [priceScaleRange, priceScaleVal, 'priceScale'],
+        [rowSpacingRange, rowSpacingVal, 'rowSpacing'],
+      ].forEach(([rangeEl, valEl, key]) => {
+        rangeEl.addEventListener('input', () => {
+          const v = Number(rangeEl.value);
+          state.sizes[key] = v;
+          valEl.textContent = `${v}%`;
+          saveState();
+          renderFrame(currentTime);
+        });
+      });
+
+      resetSizesBtn.addEventListener('click', () => {
+        state.sizes = { ...DEFAULT_SIZES };
+        saveState();
+        syncAllControlsFromState();
+        renderFrame(currentTime);
+        showToast("Barcha o'lchamlar standart holatga qaytarildi");
+      });
+
+      // Intro Logo Toggle & Text Inputs
+      showLogoInIntroCheckbox.addEventListener('change', () => {
+        state.showLogoInIntro = showLogoInIntroCheckbox.checked;
+        saveState();
+        renderFrame(currentTime);
+      });
+
+      [
+        [introTitleInput, 'introTitle'],
+        [introSubInput, 'introSub'],
+        [brandNameInput, 'brandName'],
+        [brandSubInput, 'brandSub'],
+        [priceHeaderInput, 'priceHeader'],
+        [footerUnitInput, 'footerUnit'],
+      ].forEach(([el, key]) => {
+        el.addEventListener('input', () => {
+          state.texts[key] = el.value;
+          saveState();
+          renderFrame(currentTime);
+        });
+      });
+
+      // Logo Upload & Remove
+      logoFileInput.addEventListener('change', (e) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = () => {
+          state.logoDataUrl = reader.result;
+          saveState();
+          syncLogoUI();
+          renderFrame(currentTime);
+          showToast('Logotip muvaffaqiyatli yuklandi');
+        };
+        reader.readAsDataURL(file);
+        logoFileInput.value = '';
+      });
+
+      removeLogoBtn.addEventListener('click', () => {
+        state.logoDataUrl = null;
+        saveState();
+        syncLogoUI();
+        renderFrame(currentTime);
+        showToast("Logotip o'chirildi (standart emblema)");
+      });
+
+      // 3D & Design Controls
+      depthRange.addEventListener('input', () => {
+        state.fx.depth = Number(depthRange.value);
+        depthVal.textContent = `${state.fx.depth} px`;
+        saveState();
+        renderFrame(currentTime);
+      });
+
+      shineEnabledCheckbox.addEventListener('change', () => {
+        state.fx.shineEnabled = shineEnabledCheckbox.checked;
+        saveState();
+        renderFrame(currentTime);
+      });
+
+      glowRange.addEventListener('input', () => {
+        state.fx.glow = Number(glowRange.value);
+        glowVal.textContent = `${state.fx.glow}%`;
+        saveState();
+        renderFrame(currentTime);
+      });
+
+      themeBtns.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          state.fx.theme = btn.dataset.theme;
+          saveState();
+          syncAllControlsFromState();
+          renderFrame(currentTime);
+        });
+      });
+
+      fpsBtns.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          state.fx.fps = Number(btn.dataset.fps);
+          saveState();
+          syncAllControlsFromState();
+        });
+      });
+
+      supersampleCheckbox.addEventListener('change', () => {
+        state.fx.supersample = supersampleCheckbox.checked;
+        saveState();
+        syncCanvasDimensions();
+        renderFrame(currentTime);
+      });
+
+      /* =========================================================================
+       * 11. PLAYBACK LOOP & TIMELINE SCRUBBING
+       * ========================================================================= */
+      let currentTime = 2.0; // Start on Intro so user immediately sees Intro Logo + 3D Title + Subtitle
+      let isPlaying = true;
+      let lastRafTs = null;
+      let isRecording = false;
+      let abortRecording = false;
+
+      function updateScrubberUI() {
+        timelineScrubber.value = currentTime.toFixed(2);
+        currentTimeDisplay.textContent = `${currentTime.toFixed(1)}s`;
+        if (currentTime < 4.5) {
+          phaseLabelDisplay.textContent = 'Kirish (0–4.5s)';
+        } else if (currentTime < 9.0) {
+          phaseLabelDisplay.textContent = 'Logotip (4.5–9s)';
+        } else {
+          phaseLabelDisplay.textContent = 'Narxlar (9–20s)';
+        }
+      }
+
+      function setPlaying(flag) {
+        isPlaying = flag;
+        pauseIcon.classList.toggle('hidden', !isPlaying);
+        playIcon.classList.toggle('hidden', isPlaying);
+        if (isPlaying) lastRafTs = performance.now();
+      }
+
+      function jumpTo(sec) {
+        if (isRecording) return;
+        currentTime = Math.max(0, Math.min(TOTAL_DURATION, sec));
+        updateScrubberUI();
+        renderFrame(currentTime);
+      }
+
+      playPauseBtn.addEventListener('click', () => {
+        if (isRecording) return;
+        setPlaying(!isPlaying);
+      });
+
+      timelineScrubber.addEventListener('input', () => {
+        if (isRecording) return;
+        setPlaying(false);
+        currentTime = Number(timelineScrubber.value);
+        updateScrubberUI();
+        renderFrame(currentTime);
+      });
+
+      jumpIntroBtn.addEventListener('click', () => jumpTo(2.2));
+      jumpLogoBtn.addEventListener('click', () => jumpTo(6.2));
+      jumpPricesBtn.addEventListener('click', () => jumpTo(13.8));
+
+      function animationLoop(now) {
+        if (!isRecording && isPlaying) {
+          if (lastRafTs === null) lastRafTs = now;
+          const dt = Math.min(0.1, (now - lastRafTs) / 1000);
+          lastRafTs = now;
+          currentTime = (currentTime + dt) % TOTAL_DURATION;
+          updateScrubberUI();
+          renderFrame(currentTime);
+        } else {
+          lastRafTs = now;
+        }
+        requestAnimationFrame(animationLoop);
+      }
+
+      /* =========================================================================
+       * 12. REAL-TIME VIDEO EXPORT (MP4 / WEBM via MediaRecorder @ 14 Mbps)
+       * ========================================================================= */
+      function pickSupportedMimeType() {
+        const candidates = [
+          { mime: 'video/mp4;codecs=avc1.42E01E', ext: 'mp4' },
+          { mime: 'video/mp4;codecs=h264', ext: 'mp4' },
+          { mime: 'video/mp4', ext: 'mp4' },
+          { mime: 'video/webm;codecs=vp9', ext: 'webm' },
+          { mime: 'video/webm;codecs=vp8', ext: 'webm' },
+          { mime: 'video/webm', ext: 'webm' },
+        ];
+        if (typeof MediaRecorder === 'undefined') return null;
+        for (const c of candidates) {
+          if (MediaRecorder.isTypeSupported(c.mime)) return c;
+        }
+        return { mime: '', ext: 'webm' };
+      }
+
+      async function startVideoExport() {
+        if (isRecording) return;
+
+        const chosen = pickSupportedMimeType();
+        if (!chosen) {
+          showToast("Brauzeringiz MediaRecorder video yozishni qo'llab-quvvatlamaydi");
+          return;
+        }
+
+        const fps = Number(state.fx.fps) || 60;
+        const W = state.resolution.width;
+        const H = state.resolution.height;
+
+        isRecording = true;
+        abortRecording = false;
+        const wasPlaying = isPlaying;
+        setPlaying(false);
+
+        exportVideoBtn.disabled = true;
+        exportVideoBtn.classList.add('opacity-60', 'cursor-not-allowed');
+        cancelExportBtn.classList.remove('hidden');
+        exportProgressContainer.classList.remove('hidden');
+        recordingBadge.classList.remove('hidden');
+        recordingBadge.classList.add('flex');
+
+        try {
+          const stream = previewCanvas.captureStream(fps);
+          const options = { videoBitsPerSecond: 14_000_000 };
+          if (chosen.mime) options.mimeType = chosen.mime;
+
+          const recorder = new MediaRecorder(stream, options);
+          const chunks = [];
+
+          recorder.ondataavailable = (ev) => {
+            if (ev.data && ev.data.size > 0) chunks.push(ev.data);
+          };
+
+          const stoppedPromise = new Promise((resolve) => {
+            recorder.onstop = resolve;
+          });
+
+          currentTime = 0;
+          renderFrame(0);
+          updateScrubberUI();
+
+          recorder.start(250);
+          const startPerf = performance.now();
+
+          await new Promise((resolve) => {
+            function recordStep(now) {
+              if (abortRecording) {
+                resolve();
+                return;
+              }
+              const elapsed = (now - startPerf) / 1000;
+              if (elapsed >= TOTAL_DURATION) {
+                currentTime = TOTAL_DURATION;
+                renderFrame(TOTAL_DURATION);
+                updateScrubberUI();
+                exportProgressBar.style.width = '100%';
+                exportPercentText.textContent = '100%';
+                resolve();
+                return;
+              }
+
+              currentTime = elapsed;
+              renderFrame(elapsed);
+              updateScrubberUI();
+
+              const pct = Math.min(99, Math.round((elapsed / TOTAL_DURATION) * 100));
+              exportProgressBar.style.width = `${pct}%`;
+              exportPercentText.textContent = `${pct}%`;
+              exportStatusText.textContent = `Video yozib olinmoqda (${elapsed.toFixed(1)}s / ${TOTAL_DURATION}s)...`;
+
+              requestAnimationFrame(recordStep);
+            }
+            requestAnimationFrame(recordStep);
+          });
+
+          if (recorder.state !== 'inactive') {
+            recorder.stop();
+          }
+          await stoppedPromise;
+
+          stream.getTracks().forEach((tr) => tr.stop());
+
+          if (!abortRecording && chunks.length > 0) {
+            const blob = new Blob(chunks, { type: chosen.mime || 'video/webm' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `MR_Benzin_3D_${W}x${H}.${chosen.ext}`;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            setTimeout(() => URL.revokeObjectURL(url), 5000);
+
+            showToast(`Tayyor! MR_Benzin_3D_${W}x${H}.${chosen.ext} yuklab olindi`);
+          } else if (abortRecording) {
+            showToast('Video yozib olish bekor qilindi');
+          }
+        } catch (err) {
+          console.error('Export error:', err);
+          showToast('Video yozishda xatolik yuz berdi');
+        } finally {
+          isRecording = false;
+          exportVideoBtn.disabled = false;
+          exportVideoBtn.classList.remove('opacity-60', 'cursor-not-allowed');
+          cancelExportBtn.classList.add('hidden');
+          exportProgressContainer.classList.add('hidden');
+          recordingBadge.classList.add('hidden');
+          recordingBadge.classList.remove('flex');
+          exportProgressBar.style.width = '0%';
+          setPlaying(wasPlaying);
+        }
+      }
+
+      exportVideoBtn.addEventListener('click', startVideoExport);
+      cancelExportBtn.addEventListener('click', () => {
+        abortRecording = true;
+      });
+
+      /* =========================================================================
+       * 13. INITIALIZATION
+       * ========================================================================= */
+      window.addEventListener('resize', () => {
+        syncCanvasDimensions();
+        renderFrame(currentTime);
+      });
+
+      window.onload = function () {
+        syncAllControlsFromState();
+        updateScrubberUI();
+        renderFrame(currentTime);
+
+        if (document.fonts && document.fonts.ready) {
+          document.fonts.ready.then(() => {
+            renderFrame(currentTime);
+          });
+        }
+
+        requestAnimationFrame(animationLoop);
+      };
+    })();
+  </script>
+</body>
+</html>
