@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MR AYOQSH — 3D LED Video Generator</title>
+  <title>MR AYOQSH — 3D LED Studio</title>
 
   <!-- Google Fonts: Inter (UI) & Montserrat (Bold 3D LED Typography) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -97,7 +97,7 @@
     }
 
     .glass-panel {
-      background: rgba(14, 21, 38, 0.86);
+      background: rgba(14, 21, 38, 0.88);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
     }
@@ -137,7 +137,7 @@
             MR AYOQSH <span class="text-amber-400">3D LED Studio</span>
           </h1>
           <p class="text-[11px] sm:text-xs text-slate-400">
-            Avtomatik LED ekran video generatori — 3D metall yozuvlar &amp; HD eksport
+            5 xil dizayn shabloni • 3D metall yozuvlar • HD LED eksport
           </p>
         </div>
       </div>
@@ -167,7 +167,7 @@
   </header>
 
   <!-- Main Two-Column Responsive Workspace -->
-  <main class="flex-1 w-full max-w-[1600px] mx-auto p-3 sm:p-4 lg:p-5 grid grid-cols-1 lg:grid-cols-[415px_1fr] gap-4 lg:gap-6 items-start">
+  <main class="flex-1 w-full max-w-[1600px] mx-auto p-3 sm:p-4 lg:p-5 grid grid-cols-1 lg:grid-cols-[430px_1fr] gap-4 lg:gap-6 items-start">
 
     <!-- ===================================================================== -->
     <!-- LEFT COLUMN: CONTROL PANEL (4 TABS)                                   -->
@@ -238,7 +238,7 @@
           <div id="fuelListContainer" class="space-y-2"></div>
         </section>
 
-        <!-- TAB 2: O'LCHAMLAR (DIMENSIONS & DECOUPLED SIZING SLIDERS) -->
+        <!-- TAB 2: O'LCHAMLAR (DIMENSIONS & 7 DECOUPLED SIZING SLIDERS) -->
         <section id="tab-sizes" class="tab-panel hidden space-y-4">
           <!-- Resolution Inputs -->
           <div class="bg-slate-900/75 border border-studio-border/80 rounded-xl p-3.5 space-y-3">
@@ -500,78 +500,216 @@
           </div>
         </section>
 
-        <!-- TAB 4: 3D VA DIZAYN (3D, EXPORT & BACKUP SETTINGS) -->
-        <section id="tab-design" class="tab-panel hidden space-y-3.5">
-          <!-- 3D Depth Slider -->
-          <div class="bg-slate-900/75 border border-studio-border/80 rounded-xl p-3">
-            <div class="flex items-center justify-between mb-1.5">
-              <label for="depthRange" class="text-xs font-medium text-slate-200">3D chuqurlik (Extrusion)</label>
-              <span id="depthVal" class="text-xs font-mono font-bold text-amber-400">6 px</span>
+        <!-- TAB 4: 3D VA DIZAYN (5 TEMPLATES + MIX & MATCH + 3D + BACKUP) -->
+        <section id="tab-design" class="tab-panel hidden space-y-4">
+
+          <!-- 5 Complete Design Templates -->
+          <div class="bg-slate-900/75 border border-amber-400/30 rounded-xl p-3.5 space-y-2.5">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-amber-300">Dizayn shabloni (5 xil uslub)</span>
+              <span class="text-[10px] text-slate-400">1 bosishda to'liq o'zgaradi</span>
             </div>
-            <input id="depthRange" type="range" min="0" max="12" step="1" value="6" class="w-full" />
+            <div class="grid grid-cols-1 gap-1.5">
+              <button
+                type="button"
+                data-template="royal"
+                class="template-btn flex items-center justify-between gap-2.5 px-3 py-2.5 rounded-xl border border-studio-border bg-slate-950/75 hover:border-amber-400/70 transition cursor-pointer text-left"
+              >
+                <div class="flex items-center gap-2.5 min-w-0">
+                  <span class="w-7 h-7 rounded-lg bg-gradient-to-br from-blue-600 via-blue-900 to-amber-400 border border-amber-300/60 shrink-0 shadow"></span>
+                  <div class="min-w-0">
+                    <span class="block text-xs font-bold text-white truncate">1. Royal Oltin</span>
+                    <span class="block text-[10px] text-slate-400 truncate">Ko'k fon • Yulduzlar • Klassik oltin ramka</span>
+                  </div>
+                </div>
+                <span class="template-check text-[10px] font-bold text-amber-400 hidden shrink-0">FAOL</span>
+              </button>
+
+              <button
+                type="button"
+                data-template="cyber"
+                class="template-btn flex items-center justify-between gap-2.5 px-3 py-2.5 rounded-xl border border-studio-border bg-slate-950/75 hover:border-cyan-400/70 transition cursor-pointer text-left"
+              >
+                <div class="flex items-center gap-2.5 min-w-0">
+                  <span class="w-7 h-7 rounded-lg bg-gradient-to-br from-indigo-950 via-cyan-500 to-fuchsia-500 border border-cyan-300/60 shrink-0 shadow"></span>
+                  <div class="min-w-0">
+                    <span class="block text-xs font-bold text-white truncate">2. Kiber Neon</span>
+                    <span class="block text-[10px] text-slate-400 truncate">Kiber to'r • Neon burchaklar • Moviy jilo</span>
+                  </div>
+                </div>
+                <span class="template-check text-[10px] font-bold text-cyan-300 hidden shrink-0">FAOL</span>
+              </button>
+
+              <button
+                type="button"
+                data-template="fire"
+                class="template-btn flex items-center justify-between gap-2.5 px-3 py-2.5 rounded-xl border border-studio-border bg-slate-950/75 hover:border-orange-400/70 transition cursor-pointer text-left"
+              >
+                <div class="flex items-center gap-2.5 min-w-0">
+                  <span class="w-7 h-7 rounded-lg bg-gradient-to-br from-red-950 via-orange-600 to-amber-300 border border-orange-300/60 shrink-0 shadow"></span>
+                  <div class="min-w-0">
+                    <span class="block text-xs font-bold text-white truncate">3. Olovli Premium</span>
+                    <span class="block text-[10px] text-slate-400 truncate">Qizil-qora fon • Olov uchqunlari • Bronza</span>
+                  </div>
+                </div>
+                <span class="template-check text-[10px] font-bold text-orange-300 hidden shrink-0">FAOL</span>
+              </button>
+
+              <button
+                type="button"
+                data-template="emerald"
+                class="template-btn flex items-center justify-between gap-2.5 px-3 py-2.5 rounded-xl border border-studio-border bg-slate-950/75 hover:border-emerald-400/70 transition cursor-pointer text-left"
+              >
+                <div class="flex items-center gap-2.5 min-w-0">
+                  <span class="w-7 h-7 rounded-lg bg-gradient-to-br from-emerald-950 via-emerald-600 to-amber-200 border border-emerald-300/60 shrink-0 shadow"></span>
+                  <div class="min-w-0">
+                    <span class="block text-xs font-bold text-white truncate">4. Zumrad VIP</span>
+                    <span class="block text-[10px] text-slate-400 truncate">Bokeh nurlar • Art-Deco ramka • Shampan</span>
+                  </div>
+                </div>
+                <span class="template-check text-[10px] font-bold text-emerald-300 hidden shrink-0">FAOL</span>
+              </button>
+
+              <button
+                type="button"
+                data-template="obsidian"
+                class="template-btn flex items-center justify-between gap-2.5 px-3 py-2.5 rounded-xl border border-studio-border bg-slate-950/75 hover:border-slate-300/70 transition cursor-pointer text-left"
+              >
+                <div class="flex items-center gap-2.5 min-w-0">
+                  <span class="w-7 h-7 rounded-lg bg-gradient-to-br from-zinc-950 via-zinc-700 to-amber-300 border border-zinc-400/60 shrink-0 shadow"></span>
+                  <div class="min-w-0">
+                    <span class="block text-xs font-bold text-white truncate">5. Minimalist Qora</span>
+                    <span class="block text-[10px] text-slate-400 truncate">Studiya nurlari • Minimal ramka • Xrom</span>
+                  </div>
+                </div>
+                <span class="template-check text-[10px] font-bold text-amber-300 hidden shrink-0">FAOL</span>
+              </button>
+            </div>
           </div>
 
-          <!-- Metallic Specular Shine Toggle -->
-          <div class="bg-slate-900/75 border border-studio-border/80 rounded-xl p-3">
-            <label class="flex items-center justify-between gap-2 cursor-pointer">
-              <div>
-                <span class="block text-xs font-medium text-slate-200">Metall yaltirash (Specular Shine)</span>
-                <span class="block text-[10px] text-slate-400">3D harflar yuzasidan o'tuvchi yorqin jilo</span>
+          <!-- Fine-Grained Mix & Match Controls -->
+          <div class="bg-slate-900/75 border border-studio-border/80 rounded-xl p-3.5 space-y-3">
+            <span class="block text-xs font-bold text-white">Nozik sozlash (Ranglar va Effektlar)</span>
+
+            <!-- 5 Background Themes -->
+            <div>
+              <span class="block text-[11px] text-slate-400 mb-1.5">Fon rangi</span>
+              <div class="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
+                <button type="button" data-theme="royal" class="theme-btn flex items-center gap-1.5 px-2.5 py-2 rounded-lg border border-studio-border bg-slate-950/70 hover:border-amber-400/60 transition cursor-pointer text-left">
+                  <span class="w-3.5 h-3.5 rounded-full bg-gradient-to-br from-blue-500 to-blue-950 border border-white/30 shrink-0"></span>
+                  <span class="text-[11px] font-medium text-slate-200 truncate">Royal Ko'k</span>
+                </button>
+                <button type="button" data-theme="cyber" class="theme-btn flex items-center gap-1.5 px-2.5 py-2 rounded-lg border border-studio-border bg-slate-950/70 hover:border-cyan-400/60 transition cursor-pointer text-left">
+                  <span class="w-3.5 h-3.5 rounded-full bg-gradient-to-br from-cyan-400 to-indigo-950 border border-white/30 shrink-0"></span>
+                  <span class="text-[11px] font-medium text-slate-200 truncate">Kiber Tun</span>
+                </button>
+                <button type="button" data-theme="fire" class="theme-btn flex items-center gap-1.5 px-2.5 py-2 rounded-lg border border-studio-border bg-slate-950/70 hover:border-orange-400/60 transition cursor-pointer text-left">
+                  <span class="w-3.5 h-3.5 rounded-full bg-gradient-to-br from-orange-500 to-red-950 border border-white/30 shrink-0"></span>
+                  <span class="text-[11px] font-medium text-slate-200 truncate">Olovli Qizil</span>
+                </button>
+                <button type="button" data-theme="emerald" class="theme-btn flex items-center gap-1.5 px-2.5 py-2 rounded-lg border border-studio-border bg-slate-950/70 hover:border-emerald-400/60 transition cursor-pointer text-left">
+                  <span class="w-3.5 h-3.5 rounded-full bg-gradient-to-br from-emerald-500 to-teal-950 border border-white/30 shrink-0"></span>
+                  <span class="text-[11px] font-medium text-slate-200 truncate">Zumrad Yashil</span>
+                </button>
+                <button type="button" data-theme="obsidian" class="theme-btn flex items-center gap-1.5 px-2.5 py-2 rounded-lg border border-studio-border bg-slate-950/70 hover:border-slate-300/60 transition cursor-pointer text-left">
+                  <span class="w-3.5 h-3.5 rounded-full bg-gradient-to-br from-zinc-600 to-black border border-white/30 shrink-0"></span>
+                  <span class="text-[11px] font-medium text-slate-200 truncate">Tungi Qora</span>
+                </button>
               </div>
-              <input
-                id="shineEnabledCheckbox"
-                type="checkbox"
-                checked
-                class="w-4 h-4 accent-amber-400 rounded cursor-pointer shrink-0"
-              />
-            </label>
-          </div>
-
-          <!-- Glow / Shadow Slider -->
-          <div class="bg-slate-900/75 border border-studio-border/80 rounded-xl p-3">
-            <div class="flex items-center justify-between mb-1.5">
-              <label for="glowRange" class="text-xs font-medium text-slate-200">Nurlanish / soya (Glow)</label>
-              <span id="glowVal" class="text-xs font-mono font-bold text-amber-400">75%</span>
             </div>
-            <input id="glowRange" type="range" min="0" max="100" step="5" value="75" class="w-full" />
+
+            <!-- 6 Particle / Background Effects -->
+            <div>
+              <label for="particleEffectSelect" class="block text-[11px] text-slate-400 mb-1">Fon effekti</label>
+              <select
+                id="particleEffectSelect"
+                class="w-full bg-slate-950/90 border border-studio-border focus:border-amber-400 rounded-xl px-3 py-2 text-xs font-medium text-white outline-none transition cursor-pointer"
+              >
+                <option value="stars">Yulduzlar (Miltillovchi)</option>
+                <option value="embers">Olov uchqunlari (Yuqoriga uchuvchi)</option>
+                <option value="cybergrid">Kiber to'r + Neon zarrachalar</option>
+                <option value="bokeh">Bokeh nurlar (VIP)</option>
+                <option value="beams">Yorug'lik nurlari (Studiya)</option>
+                <option value="none">Effektsiz (Toza fon)</option>
+              </select>
+            </div>
+
+            <!-- 5 Frame Styles -->
+            <div>
+              <label for="frameStyleSelect" class="block text-[11px] text-slate-400 mb-1">Ramka uslubi</label>
+              <select
+                id="frameStyleSelect"
+                class="w-full bg-slate-950/90 border border-studio-border focus:border-amber-400 rounded-xl px-3 py-2 text-xs font-medium text-white outline-none transition cursor-pointer"
+              >
+                <option value="classic">Oltin Klassik (Aylanuvchi nurlar)</option>
+                <option value="neon">Neon Burchaklar (Kiber)</option>
+                <option value="artdeco">Art-Deco VIP (Romb bezaklar)</option>
+                <option value="minimal">Minimalist (Ingichka metall)</option>
+                <option value="none">Ramkasiz</option>
+              </select>
+            </div>
+
+            <!-- 5 3D Text Color Palettes -->
+            <div>
+              <label for="textPaletteSelect" class="block text-[11px] text-slate-400 mb-1">3D Yozuv ranglari</label>
+              <select
+                id="textPaletteSelect"
+                class="w-full bg-slate-950/90 border border-studio-border focus:border-amber-400 rounded-xl px-3 py-2 text-xs font-medium text-white outline-none transition cursor-pointer"
+              >
+                <option value="gold_silver">Oltin / Kumush</option>
+                <option value="neon_cyan">Oltin / Neon Moviy</option>
+                <option value="fire_gold">Olovli Oltin / Issiq Oq</option>
+                <option value="champagne">Shampan / Platina</option>
+                <option value="chrome_gold">Yorqin Oltin / Xrom</option>
+              </select>
+            </div>
+
+            <!-- 4 Card Styles -->
+            <div>
+              <label for="cardStyleSelect" class="block text-[11px] text-slate-400 mb-1">Narx kartochka uslubi</label>
+              <select
+                id="cardStyleSelect"
+                class="w-full bg-slate-950/90 border border-studio-border focus:border-amber-400 rounded-xl px-3 py-2 text-xs font-medium text-white outline-none transition cursor-pointer"
+              >
+                <option value="glass">Shisha + Oltin chiziq</option>
+                <option value="neon">Neon chegara (Kiber)</option>
+                <option value="minimal">Minimalist chiziq</option>
+                <option value="solid">To'q qora mat</option>
+              </select>
+            </div>
           </div>
 
-          <!-- 4 Background Themes -->
-          <div class="bg-slate-900/75 border border-studio-border/80 rounded-xl p-3.5 space-y-2.5">
-            <span class="block text-xs font-semibold text-white">Fon mavzusi</span>
-            <div class="grid grid-cols-2 gap-2">
-              <button
-                type="button"
-                data-theme="royal"
-                class="theme-btn flex items-center gap-2 px-3 py-2.5 rounded-xl border border-studio-border bg-slate-950/70 hover:border-amber-400/60 transition cursor-pointer text-left"
-              >
-                <span class="w-4 h-4 rounded-full bg-gradient-to-br from-blue-500 to-blue-950 border border-white/30 shrink-0"></span>
-                <span class="text-xs font-medium text-slate-200">Royal Ko'k</span>
-              </button>
-              <button
-                type="button"
-                data-theme="navy"
-                class="theme-btn flex items-center gap-2 px-3 py-2.5 rounded-xl border border-studio-border bg-slate-950/70 hover:border-amber-400/60 transition cursor-pointer text-left"
-              >
-                <span class="w-4 h-4 rounded-full bg-gradient-to-br from-indigo-900 to-slate-950 border border-white/30 shrink-0"></span>
-                <span class="text-xs font-medium text-slate-200">To'q Navy</span>
-              </button>
-              <button
-                type="button"
-                data-theme="emerald"
-                class="theme-btn flex items-center gap-2 px-3 py-2.5 rounded-xl border border-studio-border bg-slate-950/70 hover:border-amber-400/60 transition cursor-pointer text-left"
-              >
-                <span class="w-4 h-4 rounded-full bg-gradient-to-br from-emerald-600 to-teal-950 border border-white/30 shrink-0"></span>
-                <span class="text-xs font-medium text-slate-200">Zumrad Yashil</span>
-              </button>
-              <button
-                type="button"
-                data-theme="black"
-                class="theme-btn flex items-center gap-2 px-3 py-2.5 rounded-xl border border-studio-border bg-slate-950/70 hover:border-amber-400/60 transition cursor-pointer text-left"
-              >
-                <span class="w-4 h-4 rounded-full bg-gradient-to-br from-zinc-700 to-black border border-white/30 shrink-0"></span>
-                <span class="text-xs font-medium text-slate-200">Tungi Qora</span>
-              </button>
+          <!-- 3D Depth, Shine & Glow -->
+          <div class="space-y-2.5">
+            <div class="bg-slate-900/75 border border-studio-border/80 rounded-xl p-3">
+              <div class="flex items-center justify-between mb-1.5">
+                <label for="depthRange" class="text-xs font-medium text-slate-200">3D chuqurlik (Extrusion)</label>
+                <span id="depthVal" class="text-xs font-mono font-bold text-amber-400">6 px</span>
+              </div>
+              <input id="depthRange" type="range" min="0" max="12" step="1" value="6" class="w-full" />
+            </div>
+
+            <div class="bg-slate-900/75 border border-studio-border/80 rounded-xl p-3">
+              <label class="flex items-center justify-between gap-2 cursor-pointer">
+                <div>
+                  <span class="block text-xs font-medium text-slate-200">Metall yaltirash (Specular Shine)</span>
+                  <span class="block text-[10px] text-slate-400">3D harflar yuzasidan o'tuvchi yorqin jilo</span>
+                </div>
+                <input
+                  id="shineEnabledCheckbox"
+                  type="checkbox"
+                  checked
+                  class="w-4 h-4 accent-amber-400 rounded cursor-pointer shrink-0"
+                />
+              </label>
+            </div>
+
+            <div class="bg-slate-900/75 border border-studio-border/80 rounded-xl p-3">
+              <div class="flex items-center justify-between mb-1.5">
+                <label for="glowRange" class="text-xs font-medium text-slate-200">Nurlanish / soya (Glow)</label>
+                <span id="glowVal" class="text-xs font-mono font-bold text-amber-400">75%</span>
+              </div>
+              <input id="glowRange" type="range" min="0" max="100" step="5" value="75" class="w-full" />
             </div>
           </div>
 
@@ -614,7 +752,7 @@
           <div class="bg-slate-900/75 border border-emerald-500/25 rounded-xl p-3.5 space-y-2.5">
             <div>
               <span class="block text-xs font-semibold text-emerald-300">Zaxira nusxa (Backup)</span>
-              <span class="block text-[10px] text-slate-400">Barcha narxlar, o'lchamlar va logotipni faylga saqlash</span>
+              <span class="block text-[10px] text-slate-400">Barcha narxlar, dizayn, o'lchamlar va logotipni faylga saqlash</span>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
               <button
@@ -777,9 +915,9 @@
       'use strict';
 
       /* =========================================================================
-       * 1. CONSTANTS, DEFAULTS & PERSISTENCE (localStorage + IndexedDB + ./logo.png)
+       * 1. CONSTANTS, 5 DESIGN TEMPLATES, COLOR PALETTES & PERSISTENCE
        * ========================================================================= */
-      const STORAGE_KEY = 'mr_ayoqsh_3d_studio_v6';
+      const STORAGE_KEY = 'mr_ayoqsh_3d_studio_v7';
       const IDB_NAME = 'mr_ayoqsh_db';
       const IDB_STORE = 'assets';
       const IDB_LOGO_KEY = 'custom_logo';
@@ -807,29 +945,61 @@
         rowSpacing: 100,
       };
 
-      const DEFAULT_STATE = {
-        resolution: { width: 400, height: 880 },
-        sizes: { ...DEFAULT_SIZES },
-        fuels: DEFAULT_FUELS.map((f) => ({ ...f })),
-        texts: {
-          introTitle: 'XUSH KELIBSIZ!',
-          introSub: "QULAY NARXLARDA SIFATLI VA TOZA YOQILG'I",
-          brandName: 'MR AYOQSH',
-          brandSub: "SIFATLI YOQILG'I MARKAZI",
-          priceHeader: "PREMIUM YOQILG'I",
-          footerUnit: "so'm / litr",
-        },
-        showLogoInIntro: true,
-        fx: {
-          depth: 6,
-          shineEnabled: true,
-          glow: 75,
+      // 5 Complete One-Click Design Templates
+      const DESIGN_TEMPLATES = {
+        royal: {
+          label: '1. Royal Oltin',
           theme: 'royal',
-          fps: 60,
-          supersample: true,
+          particleEffect: 'stars',
+          frameStyle: 'classic',
+          textPalette: 'gold_silver',
+          cardStyle: 'glass',
+          depth: 6,
+          glow: 75,
+        },
+        cyber: {
+          label: '2. Kiber Neon',
+          theme: 'cyber',
+          particleEffect: 'cybergrid',
+          frameStyle: 'neon',
+          textPalette: 'neon_cyan',
+          cardStyle: 'neon',
+          depth: 5,
+          glow: 90,
+        },
+        fire: {
+          label: '3. Olovli Premium',
+          theme: 'fire',
+          particleEffect: 'embers',
+          frameStyle: 'classic',
+          textPalette: 'fire_gold',
+          cardStyle: 'glass',
+          depth: 7,
+          glow: 85,
+        },
+        emerald: {
+          label: '4. Zumrad VIP',
+          theme: 'emerald',
+          particleEffect: 'bokeh',
+          frameStyle: 'artdeco',
+          textPalette: 'champagne',
+          cardStyle: 'glass',
+          depth: 6,
+          glow: 70,
+        },
+        obsidian: {
+          label: '5. Minimalist Qora',
+          theme: 'obsidian',
+          particleEffect: 'beams',
+          frameStyle: 'minimal',
+          textPalette: 'chrome_gold',
+          cardStyle: 'minimal',
+          depth: 4,
+          glow: 60,
         },
       };
 
+      // 5 Rich Background Themes
       const THEMES = {
         royal: {
           bgTop: '#041236',
@@ -838,38 +1008,225 @@
           radialInner: 'rgba(34, 110, 245, 0.42)',
           radialOuter: 'rgba(3, 11, 36, 0)',
           cardBg: 'rgba(5, 16, 48, 0.72)',
-          cardBorder: 'rgba(245, 184, 46, 0.36)',
+          cardBorder: 'rgba(245, 184, 46, 0.42)',
+          cardAccent: '#f5b82e',
           rayColor: 'rgba(130, 185, 255, 0.08)',
+          frameDark: '#a6620b',
+          frameMid: '#f5b01e',
+          frameLight: '#fff2ba',
+          frameOrb: 'rgba(255, 215, 95, 0.78)',
+          neonColor: '#38bdf8',
+          neonAlt: '#f5b82e',
+          dividerColor: 'rgba(255, 236, 158, 0.98)',
+          dividerGlow: 'rgba(255, 210, 80, 0.8)',
+          bokehA: 'rgba(56, 189, 248, 0.16)',
+          bokehB: 'rgba(245, 184, 46, 0.14)',
         },
-        navy: {
-          bgTop: '#05091a',
-          bgMid: '#0e193b',
-          bgBottom: '#02040d',
-          radialInner: 'rgba(56, 85, 180, 0.34)',
-          radialOuter: 'rgba(2, 4, 13, 0)',
-          cardBg: 'rgba(8, 13, 30, 0.78)',
-          cardBorder: 'rgba(245, 184, 46, 0.32)',
-          rayColor: 'rgba(165, 180, 252, 0.07)',
+        cyber: {
+          bgTop: '#050414',
+          bgMid: '#0c0b2e',
+          bgBottom: '#03020a',
+          radialInner: 'rgba(6, 182, 212, 0.28)',
+          radialOuter: 'rgba(5, 4, 20, 0)',
+          cardBg: 'rgba(8, 12, 34, 0.78)',
+          cardBorder: 'rgba(34, 211, 238, 0.48)',
+          cardAccent: '#22d3ee',
+          rayColor: 'rgba(34, 211, 238, 0.08)',
+          frameDark: '#0e7490',
+          frameMid: '#22d3ee',
+          frameLight: '#cffafe',
+          frameOrb: 'rgba(34, 211, 238, 0.85)',
+          neonColor: '#22d3ee',
+          neonAlt: '#e879f9',
+          dividerColor: 'rgba(103, 232, 249, 0.98)',
+          dividerGlow: 'rgba(34, 211, 238, 0.85)',
+          bokehA: 'rgba(34, 211, 238, 0.18)',
+          bokehB: 'rgba(232, 121, 249, 0.14)',
+        },
+        fire: {
+          bgTop: '#170404',
+          bgMid: '#3d0c08',
+          bgBottom: '#0d0202',
+          radialInner: 'rgba(234, 88, 12, 0.36)',
+          radialOuter: 'rgba(13, 2, 2, 0)',
+          cardBg: 'rgba(26, 8, 6, 0.78)',
+          cardBorder: 'rgba(249, 115, 22, 0.50)',
+          cardAccent: '#fb923c',
+          rayColor: 'rgba(251, 146, 60, 0.09)',
+          frameDark: '#9a3412',
+          frameMid: '#f97316',
+          frameLight: '#ffedd5',
+          frameOrb: 'rgba(251, 146, 60, 0.88)',
+          neonColor: '#fb923c',
+          neonAlt: '#ef4444',
+          dividerColor: 'rgba(254, 215, 170, 0.98)',
+          dividerGlow: 'rgba(249, 115, 22, 0.85)',
+          bokehA: 'rgba(249, 115, 22, 0.18)',
+          bokehB: 'rgba(239, 68, 68, 0.15)',
         },
         emerald: {
-          bgTop: '#021c18',
-          bgMid: '#063d34',
-          bgBottom: '#021210',
+          bgTop: '#021b16',
+          bgMid: '#064035',
+          bgBottom: '#02120f',
           radialInner: 'rgba(16, 185, 129, 0.34)',
-          radialOuter: 'rgba(2, 18, 16, 0)',
-          cardBg: 'rgba(3, 27, 23, 0.76)',
-          cardBorder: 'rgba(245, 184, 46, 0.38)',
+          radialOuter: 'rgba(2, 18, 15, 0)',
+          cardBg: 'rgba(3, 28, 24, 0.76)',
+          cardBorder: 'rgba(234, 211, 156, 0.45)',
+          cardAccent: '#e6c982',
           rayColor: 'rgba(110, 231, 183, 0.08)',
+          frameDark: '#9c7c38',
+          frameMid: '#e6c982',
+          frameLight: '#fef9e7',
+          frameOrb: 'rgba(250, 232, 182, 0.82)',
+          neonColor: '#34d399',
+          neonAlt: '#e6c982',
+          dividerColor: 'rgba(254, 243, 199, 0.96)',
+          dividerGlow: 'rgba(230, 201, 130, 0.75)',
+          bokehA: 'rgba(52, 211, 153, 0.16)',
+          bokehB: 'rgba(230, 201, 130, 0.16)',
         },
-        black: {
+        obsidian: {
           bgTop: '#08080c',
-          bgMid: '#181822',
+          bgMid: '#181820',
           bgBottom: '#030305',
           radialInner: 'rgba(245, 184, 46, 0.16)',
           radialOuter: 'rgba(3, 3, 5, 0)',
-          cardBg: 'rgba(14, 14, 20, 0.82)',
-          cardBorder: 'rgba(245, 184, 46, 0.40)',
-          rayColor: 'rgba(255, 220, 130, 0.07)',
+          cardBg: 'rgba(15, 15, 21, 0.86)',
+          cardBorder: 'rgba(212, 175, 55, 0.42)',
+          cardAccent: '#eab308',
+          rayColor: 'rgba(255, 245, 215, 0.06)',
+          frameDark: '#71717a',
+          frameMid: '#e4e4e7',
+          frameLight: '#fef08a',
+          frameOrb: 'rgba(254, 240, 138, 0.78)',
+          neonColor: '#facc15',
+          neonAlt: '#e4e4e7',
+          dividerColor: 'rgba(254, 249, 195, 0.92)',
+          dividerGlow: 'rgba(250, 204, 21, 0.65)',
+          bokehA: 'rgba(250, 204, 21, 0.12)',
+          bokehB: 'rgba(228, 228, 231, 0.11)',
+        },
+      };
+
+      // 5 3D Metallic Text Color Palettes (each has 'primary' & 'secondary')
+      const TEXT_PALETTES = {
+        gold_silver: {
+          primary: {
+            extStart: [70, 36, 4],
+            extEnd: [145, 80, 14],
+            glow: 'rgba(255, 196, 46, 0.50)',
+            glowFill: '#f5b82e',
+            stops: ['#fff9d6', '#ffe074', '#f5b01e', '#c87608', '#ffe38c'],
+            bevel: 'rgba(255, 250, 220, 0.74)',
+          },
+          secondary: {
+            extStart: [35, 43, 57],
+            extEnd: [95, 105, 122],
+            glow: 'rgba(180, 215, 255, 0.36)',
+            glowFill: '#e2e8f0',
+            stops: ['#ffffff', '#e8f0ff', '#b6c7e2', '#8fa5c8', '#ffffff'],
+            bevel: 'rgba(255, 255, 255, 0.68)',
+          },
+        },
+        neon_cyan: {
+          primary: {
+            extStart: [92, 54, 6],
+            extEnd: [185, 118, 16],
+            glow: 'rgba(250, 204, 21, 0.58)',
+            glowFill: '#facc15',
+            stops: ['#fefce8', '#fde047', '#f59e0b', '#b45309', '#fef08a'],
+            bevel: 'rgba(254, 252, 232, 0.82)',
+          },
+          secondary: {
+            extStart: [8, 51, 68],
+            extEnd: [14, 116, 144],
+            glow: 'rgba(34, 211, 238, 0.62)',
+            glowFill: '#22d3ee',
+            stops: ['#ecfeff', '#a5f3fc', '#22d3ee', '#0891b2', '#cffafe'],
+            bevel: 'rgba(236, 254, 255, 0.80)',
+          },
+        },
+        fire_gold: {
+          primary: {
+            extStart: [82, 18, 4],
+            extEnd: [175, 58, 12],
+            glow: 'rgba(249, 115, 22, 0.62)',
+            glowFill: '#fb923c',
+            stops: ['#fff7ed', '#fed7aa', '#fb923c', '#c2410c', '#fde047'],
+            bevel: 'rgba(255, 247, 237, 0.78)',
+          },
+          secondary: {
+            extStart: [64, 42, 32],
+            extEnd: [120, 88, 72],
+            glow: 'rgba(254, 215, 170, 0.42)',
+            glowFill: '#ffedd5',
+            stops: ['#ffffff', '#fff7ed', '#fed7aa', '#d6b49c', '#ffffff'],
+            bevel: 'rgba(255, 255, 255, 0.72)',
+          },
+        },
+        champagne: {
+          primary: {
+            extStart: [76, 60, 26],
+            extEnd: [152, 124, 62],
+            glow: 'rgba(230, 201, 130, 0.50)',
+            glowFill: '#e6c982',
+            stops: ['#fffdf5', '#f7e7be', '#d8b76a', '#9c7c38', '#faecc6'],
+            bevel: 'rgba(255, 253, 245, 0.78)',
+          },
+          secondary: {
+            extStart: [34, 56, 52],
+            extEnd: [84, 118, 112],
+            glow: 'rgba(167, 243, 208, 0.36)',
+            glowFill: '#d1fae5',
+            stops: ['#ffffff', '#ecfdf5', '#cbd5e1', '#94a3b8', '#f8fafc'],
+            bevel: 'rgba(255, 255, 255, 0.72)',
+          },
+        },
+        chrome_gold: {
+          primary: {
+            extStart: [62, 46, 6],
+            extEnd: [155, 115, 16],
+            glow: 'rgba(250, 204, 21, 0.48)',
+            glowFill: '#eab308',
+            stops: ['#ffffff', '#fef08a', '#eab308', '#a16207', '#fef9c3'],
+            bevel: 'rgba(255, 255, 255, 0.85)',
+          },
+          secondary: {
+            extStart: [36, 36, 42],
+            extEnd: [108, 108, 118],
+            glow: 'rgba(255, 255, 255, 0.34)',
+            glowFill: '#f4f4f5',
+            stops: ['#ffffff', '#f4f4f5', '#a1a1aa', '#71717a', '#ffffff'],
+            bevel: 'rgba(255, 255, 255, 0.82)',
+          },
+        },
+      };
+
+      const DEFAULT_STATE = {
+        resolution: { width: 400, height: 880 },
+        sizes: { ...DEFAULT_SIZES },
+        fuels: DEFAULT_FUELS.map((f) => ({ ...f })),
+        texts: {
+          introTitle: 'XUSH KELIBSIZ!',
+          introSub: "QULAY NARXLARDA SIFATLI VA TOZA YOQILG'I",
+          brandName: 'MR AYOQSH',
+          brandSub: "PREMIUM YOQILG'I",
+          priceHeader: "YOQILG'I NARXLARI",
+          footerUnit: "so'm / litr",
+        },
+        showLogoInIntro: true,
+        fx: {
+          template: 'royal',
+          theme: 'royal',
+          particleEffect: 'stars',
+          frameStyle: 'classic',
+          textPalette: 'gold_silver',
+          cardStyle: 'glass',
+          depth: 6,
+          shineEnabled: true,
+          glow: 75,
+          fps: 60,
+          supersample: true,
         },
       };
 
@@ -892,6 +1249,19 @@
         mergedSizes.priceScale = clampInt(mergedSizes.priceScale, 50, 200);
         mergedSizes.rowSpacing = clampInt(mergedSizes.rowSpacing, 70, 140);
 
+        const rawFx = parsed?.fx || {};
+        const validTheme = THEMES[rawFx.theme] ? rawFx.theme : 'royal';
+        const validParticles = ['stars', 'embers', 'cybergrid', 'bokeh', 'beams', 'none'].includes(rawFx.particleEffect)
+          ? rawFx.particleEffect
+          : 'stars';
+        const validFrame = ['classic', 'neon', 'artdeco', 'minimal', 'none'].includes(rawFx.frameStyle)
+          ? rawFx.frameStyle
+          : 'classic';
+        const validPalette = TEXT_PALETTES[rawFx.textPalette] ? rawFx.textPalette : 'gold_silver';
+        const validCard = ['glass', 'neon', 'minimal', 'solid'].includes(rawFx.cardStyle)
+          ? rawFx.cardStyle
+          : 'glass';
+
         return {
           resolution: {
             width: clampInt(parsed?.resolution?.width ?? 400, 160, 2160),
@@ -910,9 +1280,17 @@
           texts: { ...DEFAULT_STATE.texts, ...(parsed?.texts || {}) },
           showLogoInIntro: parsed?.showLogoInIntro !== false,
           fx: {
-            ...DEFAULT_STATE.fx,
-            ...(parsed?.fx || {}),
-            shineEnabled: parsed?.fx?.shineEnabled !== false,
+            template: DESIGN_TEMPLATES[rawFx.template] ? rawFx.template : 'custom',
+            theme: validTheme,
+            particleEffect: validParticles,
+            frameStyle: validFrame,
+            textPalette: validPalette,
+            cardStyle: validCard,
+            depth: clampInt(rawFx.depth ?? 6, 0, 12),
+            shineEnabled: rawFx.shineEnabled !== false,
+            glow: clampInt(rawFx.glow ?? 75, 0, 100),
+            fps: Number(rawFx.fps) === 30 ? 30 : 60,
+            supersample: rawFx.supersample !== false,
           },
         };
       }
@@ -986,9 +1364,8 @@
       }
 
       let state = loadStateFromLocalStorage();
-      let currentLogoDataUrl = null; // Stored in IndexedDB (not localStorage)
+      let currentLogoDataUrl = null;
       let customLogoImg = null;
-      let isUsingStaticRepoLogo = false;
 
       /* =========================================================================
        * 2. DOM REFERENCES
@@ -1043,13 +1420,18 @@
       const removeLogoBtn = document.getElementById('removeLogoBtn');
       const logoPreviewBox = document.getElementById('logoPreviewBox');
 
-      // Tab 4: 3D, Design & Backup
+      // Tab 4: 3D, Design Templates & Mix-and-Match
+      const templateBtns = document.querySelectorAll('.template-btn');
+      const themeBtns = document.querySelectorAll('.theme-btn');
+      const particleEffectSelect = document.getElementById('particleEffectSelect');
+      const frameStyleSelect = document.getElementById('frameStyleSelect');
+      const textPaletteSelect = document.getElementById('textPaletteSelect');
+      const cardStyleSelect = document.getElementById('cardStyleSelect');
       const depthRange = document.getElementById('depthRange');
       const depthVal = document.getElementById('depthVal');
       const shineEnabledCheckbox = document.getElementById('shineEnabledCheckbox');
       const glowRange = document.getElementById('glowRange');
       const glowVal = document.getElementById('glowVal');
-      const themeBtns = document.querySelectorAll('.theme-btn');
       const fpsBtns = document.querySelectorAll('.fps-btn');
       const supersampleCheckbox = document.getElementById('supersampleCheckbox');
       const exportJsonBtn = document.getElementById('exportJsonBtn');
@@ -1165,25 +1547,72 @@
       }
 
       /* =========================================================================
-       * 6. STARFIELD PARTICLES
+       * 6. SEEDED PARTICLE POOLS (STARS, EMBERS, BOKEH, CYBER PARTICLES)
        * ========================================================================= */
-      const STARS = [];
-      (function initStars() {
-        let seed = 1337;
-        function rand() {
+      function createSeededRand(seedInit) {
+        let seed = seedInit;
+        return function () {
           seed = (seed * 16807) % 2147483647;
           return (seed - 1) / 2147483646;
-        }
+        };
+      }
+
+      const STARS = [];
+      const EMBERS = [];
+      const BOKEH = [];
+      const CYBER_DOTS = [];
+
+      (function initParticles() {
+        const rand1 = createSeededRand(1337);
         for (let i = 0; i < 65; i++) {
           STARS.push({
-            nx: rand(),
-            ny: rand(),
-            r: 0.7 + rand() * 1.9,
-            speed: 0.004 + rand() * 0.012,
-            phase: rand() * Math.PI * 2,
-            twinkleFreq: 1.2 + rand() * 2.4,
-            isGold: rand() > 0.42,
-            isCross: rand() > 0.78,
+            nx: rand1(),
+            ny: rand1(),
+            r: 0.7 + rand1() * 1.9,
+            speed: 0.004 + rand1() * 0.012,
+            phase: rand1() * Math.PI * 2,
+            twinkleFreq: 1.2 + rand1() * 2.4,
+            isGold: rand1() > 0.42,
+            isCross: rand1() > 0.78,
+          });
+        }
+
+        const rand2 = createSeededRand(4242);
+        for (let i = 0; i < 55; i++) {
+          EMBERS.push({
+            nx: rand2(),
+            ny: rand2(),
+            r: 1.2 + rand2() * 2.6,
+            speedY: 0.045 + rand2() * 0.085,
+            swayAmp: 0.015 + rand2() * 0.035,
+            swayFreq: 1.4 + rand2() * 2.5,
+            phase: rand2() * Math.PI * 2,
+            hot: rand2() > 0.4,
+          });
+        }
+
+        const rand3 = createSeededRand(7890);
+        for (let i = 0; i < 24; i++) {
+          BOKEH.push({
+            nx: rand3(),
+            ny: rand3(),
+            r: 18 + rand3() * 44,
+            speedY: 0.008 + rand3() * 0.016,
+            driftX: (rand3() - 0.5) * 0.014,
+            phase: rand3() * Math.PI * 2,
+            alt: rand3() > 0.5,
+          });
+        }
+
+        const rand4 = createSeededRand(9001);
+        for (let i = 0; i < 42; i++) {
+          CYBER_DOTS.push({
+            nx: rand4(),
+            ny: rand4(),
+            size: 2.2 + rand4() * 3.8,
+            speedY: 0.018 + rand4() * 0.042,
+            phase: rand4() * Math.PI * 2,
+            isAlt: rand4() > 0.68,
           });
         }
       })();
@@ -1220,7 +1649,7 @@
       }
 
       /* =========================================================================
-       * 8. 3D METALLIC TEXT ENGINE & MULTI-LINE WORD-WRAPPER
+       * 8. 3D METALLIC TEXT ENGINE (5 PALETTES) & MULTI-LINE WORD-WRAPPER
        * ========================================================================= */
       function wrapText(ctx, text, maxWidth) {
         if (!text) return [];
@@ -1263,7 +1692,7 @@
           maxWidth = null,
           weight = 900,
           align = 'center',
-          theme = 'gold',
+          role = 'primary', // 'primary' (gold/accent) or 'secondary' (silver/cyan/white)
           alpha = 1,
           scale = 1,
           depth = state.fx.depth * uScale,
@@ -1271,6 +1700,9 @@
         } = opts;
 
         if (alpha <= 0.005) return;
+
+        const palGroup = TEXT_PALETTES[state.fx.textPalette] || TEXT_PALETTES.gold_silver;
+        const pal = role === 'secondary' ? palGroup.secondary : palGroup.primary;
 
         let fontSize = Math.max(10, baseSize);
         ctx.save();
@@ -1319,10 +1751,7 @@
         // 1. Soft Ground Drop Shadow
         if (glowAmt > 0.02) {
           sctx.save();
-          sctx.shadowColor =
-            theme === 'gold'
-              ? `rgba(0, 0, 0, ${0.82 * glowAmt})`
-              : `rgba(0, 0, 0, ${0.75 * glowAmt})`;
+          sctx.shadowColor = `rgba(0, 0, 0, ${0.84 * glowAmt})`;
           sctx.shadowBlur = Math.max(4, (10 + steps) * uScale * glowAmt);
           sctx.shadowOffsetX = steps * 0.35;
           sctx.shadowOffsetY = steps * 0.85 + 2 * uScale;
@@ -1333,17 +1762,15 @@
 
         // 2. 3D Extruded Back Layers
         if (steps > 0) {
+          const [r0, g0, b0] = pal.extStart;
+          const [r1, g1, b1] = pal.extEnd;
           for (let i = steps; i >= 1; i--) {
             const ratio = i / steps;
-            if (theme === 'gold') {
-              const r = Math.round(70 + (1 - ratio) * 75);
-              const g = Math.round(36 + (1 - ratio) * 44);
-              const b = Math.round(4 + (1 - ratio) * 10);
-              sctx.fillStyle = `rgb(${r}, ${g}, ${b})`;
-            } else {
-              const c = Math.round(35 + (1 - ratio) * 58);
-              sctx.fillStyle = `rgb(${c}, ${c + 8}, ${c + 22})`;
-            }
+            const inv = 1 - ratio;
+            const r = Math.round(r0 + inv * (r1 - r0));
+            const g = Math.round(g0 + inv * (g1 - g0));
+            const b = Math.round(b0 + inv * (b1 - b0));
+            sctx.fillStyle = `rgb(${r}, ${g}, ${b})`;
             sctx.fillText(text, anchorX + i * 0.25, anchorY + i * 0.72);
           }
         }
@@ -1351,38 +1778,27 @@
         // 3. Ambient Outer Glow
         if (glowAmt > 0.05) {
           sctx.save();
-          sctx.shadowColor =
-            theme === 'gold'
-              ? `rgba(255, 196, 46, ${0.48 * glowAmt})`
-              : `rgba(180, 215, 255, ${0.35 * glowAmt})`;
-          sctx.shadowBlur = Math.max(4, 14 * uScale * glowAmt);
-          sctx.fillStyle = theme === 'gold' ? '#f5b82e' : '#e2e8f0';
+          sctx.shadowColor = pal.glow;
+          sctx.shadowBlur = Math.max(4, 15 * uScale * glowAmt);
+          sctx.fillStyle = pal.glowFill;
           sctx.fillText(text, anchorX, anchorY);
           sctx.restore();
         }
 
         // 4. Metallic Front Face Gradient
         const faceGrad = sctx.createLinearGradient(0, anchorY - fontSize * 0.52, 0, anchorY + fontSize * 0.52);
-        if (theme === 'gold') {
-          faceGrad.addColorStop(0.0, '#fff9d6');
-          faceGrad.addColorStop(0.28, '#ffe074');
-          faceGrad.addColorStop(0.54, '#f5b01e');
-          faceGrad.addColorStop(0.82, '#c87608');
-          faceGrad.addColorStop(1.0, '#ffe38c');
-        } else {
-          faceGrad.addColorStop(0.0, '#ffffff');
-          faceGrad.addColorStop(0.45, '#e8f0ff');
-          faceGrad.addColorStop(0.75, '#b6c7e2');
-          faceGrad.addColorStop(1.0, '#ffffff');
-        }
+        faceGrad.addColorStop(0.0, pal.stops[0]);
+        faceGrad.addColorStop(0.28, pal.stops[1]);
+        faceGrad.addColorStop(0.54, pal.stops[2]);
+        faceGrad.addColorStop(0.82, pal.stops[3]);
+        faceGrad.addColorStop(1.0, pal.stops[4]);
 
         sctx.fillStyle = faceGrad;
         sctx.fillText(text, anchorX, anchorY);
 
         // 5. Crisp Top Bevel Highlight
         sctx.lineWidth = Math.max(0.6, fontSize * 0.025);
-        sctx.strokeStyle =
-          theme === 'gold' ? 'rgba(255, 250, 220, 0.72)' : 'rgba(255, 255, 255, 0.65)';
+        sctx.strokeStyle = pal.bevel;
         sctx.strokeText(text, anchorX, anchorY);
 
         // 6. Animated Diagonal Specular Sheen Sweep
@@ -1399,7 +1815,7 @@
           );
           sheenGrad.addColorStop(0, 'rgba(255, 255, 255, 0)');
           sheenGrad.addColorStop(0.45, 'rgba(255, 255, 255, 0.80)');
-          sheenGrad.addColorStop(0.55, 'rgba(255, 255, 255, 0.92)');
+          sheenGrad.addColorStop(0.55, 'rgba(255, 255, 255, 0.94)');
           sheenGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
 
           sctx.fillStyle = sheenGrad;
@@ -1476,11 +1892,13 @@
       }
 
       /* =========================================================================
-       * 9. BACKGROUND, GOLDEN FRAME & 3D VECTOR / PNG LOGO RENDERERS
+       * 9. BACKGROUNDS (5 THEMES) & 6 PARTICLE / AMBIENT EFFECTS
        * ========================================================================= */
-      function drawBackground(ctx, t, W, H, uScale) {
+      function drawBackgroundAndParticles(ctx, t, W, H, uScale) {
         const th = THEMES[state.fx.theme] || THEMES.royal;
+        const eff = state.fx.particleEffect || 'stars';
 
+        // Base vertical gradient
         const lin = ctx.createLinearGradient(0, 0, 0, H);
         lin.addColorStop(0, th.bgTop);
         lin.addColorStop(0.5, th.bgMid);
@@ -1488,6 +1906,7 @@
         ctx.fillStyle = lin;
         ctx.fillRect(0, 0, W, H);
 
+        // Center atmospheric radial glow
         const rad = ctx.createRadialGradient(
           W * 0.5,
           H * 0.36,
@@ -1501,50 +1920,253 @@
         ctx.fillStyle = rad;
         ctx.fillRect(0, 0, W, H);
 
-        // Subtle diagonal animated light streaks
-        ctx.save();
-        ctx.strokeStyle = th.rayColor;
-        ctx.lineWidth = Math.max(1, 1.5 * uScale);
-        for (let i = 0; i < 4; i++) {
-          const offset = ((t * 18 + i * 210) % (W + H)) - H * 0.3;
-          ctx.beginPath();
-          ctx.moveTo(offset, 0);
-          ctx.lineTo(offset - H * 0.45, H);
-          ctx.stroke();
+        // Subtle diagonal carbon texture for Obsidian theme
+        if (state.fx.theme === 'obsidian') {
+          ctx.save();
+          ctx.strokeStyle = 'rgba(255, 255, 255, 0.025)';
+          ctx.lineWidth = Math.max(1, 1.2 * uScale);
+          const step = Math.max(14, 22 * uScale);
+          for (let x = -H; x < W + H; x += step) {
+            ctx.beginPath();
+            ctx.moveTo(x, 0);
+            ctx.lineTo(x + H, H);
+            ctx.stroke();
+          }
+          ctx.restore();
         }
-        ctx.restore();
 
-        // Twinkling starry particles
-        ctx.save();
-        for (let i = 0; i < STARS.length; i++) {
-          const s = STARS[i];
-          const sx = s.nx * W;
-          const sy = (((s.ny - t * s.speed) % 1) + 1) % 1 * H;
-          const twinkle = 0.25 + 0.75 * (0.5 + 0.5 * Math.sin(t * s.twinkleFreq + s.phase));
-          const radPx = s.r * uScale;
+        if (eff === 'none') return;
 
-          ctx.globalAlpha = twinkle * 0.85;
-          ctx.fillStyle = s.isGold ? '#ffe394' : '#cbd5e1';
+        // EFFECT 1: TWINKLING STARS & DIAGONAL LIGHT STREAKS
+        if (eff === 'stars') {
+          ctx.save();
+          ctx.strokeStyle = th.rayColor;
+          ctx.lineWidth = Math.max(1, 1.5 * uScale);
+          for (let i = 0; i < 4; i++) {
+            const offset = ((t * 18 + i * 210) % (W + H)) - H * 0.3;
+            ctx.beginPath();
+            ctx.moveTo(offset, 0);
+            ctx.lineTo(offset - H * 0.45, H);
+            ctx.stroke();
+          }
+          ctx.restore();
 
-          if (s.isCross) {
-            const arm = radPx * 2.4;
+          ctx.save();
+          for (let i = 0; i < STARS.length; i++) {
+            const s = STARS[i];
+            const sx = s.nx * W;
+            const sy = (((s.ny - t * s.speed) % 1) + 1) % 1 * H;
+            const twinkle = 0.25 + 0.75 * (0.5 + 0.5 * Math.sin(t * s.twinkleFreq + s.phase));
+            const radPx = s.r * uScale;
+
+            ctx.globalAlpha = twinkle * 0.85;
+            ctx.fillStyle = s.isGold ? '#ffe394' : '#cbd5e1';
+
+            if (s.isCross) {
+              const arm = radPx * 2.4;
+              ctx.beginPath();
+              ctx.moveTo(sx - arm, sy);
+              ctx.lineTo(sx + arm, sy);
+              ctx.moveTo(sx, sy - arm);
+              ctx.lineTo(sx, sy + arm);
+              ctx.strokeStyle = s.isGold ? 'rgba(255, 227, 148, 0.9)' : 'rgba(226, 232, 240, 0.8)';
+              ctx.lineWidth = Math.max(0.7, 0.9 * uScale);
+              ctx.stroke();
+            } else {
+              ctx.beginPath();
+              ctx.arc(sx, sy, radPx, 0, Math.PI * 2);
+              ctx.fill();
+            }
+          }
+          ctx.restore();
+          return;
+        }
+
+        // EFFECT 2: RISING GLOWING FIRE EMBERS & WARM SPARKS
+        if (eff === 'embers') {
+          // Warm lower ember glow
+          const bottomGlow = ctx.createLinearGradient(0, H * 0.65, 0, H);
+          bottomGlow.addColorStop(0, 'rgba(234, 88, 12, 0)');
+          bottomGlow.addColorStop(1, 'rgba(234, 88, 12, 0.28)');
+          ctx.fillStyle = bottomGlow;
+          ctx.fillRect(0, H * 0.65, W, H * 0.35);
+
+          ctx.save();
+          for (let i = 0; i < EMBERS.length; i++) {
+            const e = EMBERS[i];
+            const progressY = (((e.ny - t * e.speedY) % 1) + 1) % 1;
+            const sy = progressY * H;
+            const sway = Math.sin(t * e.swayFreq + e.phase) * e.swayAmp * W;
+            const sx = (((e.nx * W + sway) % W) + W) % W;
+            const flicker = 0.45 + 0.55 * (0.5 + 0.5 * Math.sin(t * 6.5 + e.phase));
+            const fadeTop = clamp01(progressY * 2.4);
+            const r = e.r * uScale;
+
+            const g = ctx.createRadialGradient(sx, sy, 0, sx, sy, r * 3.2);
+            if (e.hot) {
+              g.addColorStop(0, `rgba(255, 250, 200, ${0.95 * flicker * fadeTop})`);
+              g.addColorStop(0.35, `rgba(251, 146, 60, ${0.75 * flicker * fadeTop})`);
+              g.addColorStop(1, 'rgba(239, 68, 68, 0)');
+            } else {
+              g.addColorStop(0, `rgba(253, 186, 116, ${0.85 * flicker * fadeTop})`);
+              g.addColorStop(0.45, `rgba(234, 88, 12, ${0.55 * flicker * fadeTop})`);
+              g.addColorStop(1, 'rgba(185, 28, 28, 0)');
+            }
+            ctx.fillStyle = g;
+            ctx.beginPath();
+            ctx.arc(sx, sy, r * 3.2, 0, Math.PI * 2);
+            ctx.fill();
+          }
+          ctx.restore();
+          return;
+        }
+
+        // EFFECT 3: ANIMATED PERSPECTIVE CYBER GRID + FLOATING NEON PARTICLES
+        if (eff === 'cybergrid') {
+          ctx.save();
+          const horizonY = H * 0.56;
+          const gridBottom = H;
+
+          // Perspective vertical lines
+          ctx.strokeStyle = 'rgba(34, 211, 238, 0.16)';
+          ctx.lineWidth = Math.max(0.8, 1.0 * uScale);
+          const cols = 12;
+          for (let i = -cols; i <= cols; i++) {
+            const topX = W / 2 + i * (W * 0.045);
+            const botX = W / 2 + i * (W * 0.24);
+            ctx.beginPath();
+            ctx.moveTo(topX, horizonY);
+            ctx.lineTo(botX, gridBottom);
+            ctx.stroke();
+          }
+
+          // Moving horizontal perspective scan lines
+          const rows = 10;
+          const scroll = (t * 0.45) % 1;
+          for (let r = 0; r < rows; r++) {
+            const frac = ((r + scroll) / rows);
+            const eased = frac * frac;
+            const y = horizonY + eased * (gridBottom - horizonY);
+            ctx.strokeStyle = `rgba(34, 211, 238, ${0.06 + eased * 0.24})`;
+            ctx.beginPath();
+            ctx.moveTo(0, y);
+            ctx.lineTo(W, y);
+            ctx.stroke();
+          }
+
+          // Horizon glow line
+          const hGrad = ctx.createLinearGradient(0, horizonY - 2, 0, horizonY + 18 * uScale);
+          hGrad.addColorStop(0, 'rgba(34, 211, 238, 0.30)');
+          hGrad.addColorStop(1, 'rgba(34, 211, 238, 0)');
+          ctx.fillStyle = hGrad;
+          ctx.fillRect(0, horizonY, W, 18 * uScale);
+
+          // Floating neon squares & dots
+          for (let i = 0; i < CYBER_DOTS.length; i++) {
+            const d = CYBER_DOTS[i];
+            const sx = d.nx * W;
+            const sy = (((d.ny - t * d.speedY) % 1) + 1) % 1 * H;
+            const pulse = 0.35 + 0.65 * (0.5 + 0.5 * Math.sin(t * 3.1 + d.phase));
+            const sz = d.size * uScale;
+            ctx.globalAlpha = pulse * 0.82;
+            ctx.fillStyle = d.isAlt ? th.neonAlt : th.neonColor;
+            ctx.shadowColor = ctx.fillStyle;
+            ctx.shadowBlur = 8 * uScale;
+            ctx.fillRect(sx - sz / 2, sy - sz / 2, sz, sz);
+          }
+          ctx.restore();
+          return;
+        }
+
+        // EFFECT 4: SOFT FLOATING BOKEH ORBS & DIAMOND SPARKLES
+        if (eff === 'bokeh') {
+          ctx.save();
+          for (let i = 0; i < BOKEH.length; i++) {
+            const b = BOKEH[i];
+            const sx = (((b.nx + t * b.driftX) % 1) + 1) % 1 * W;
+            const sy = (((b.ny - t * b.speedY) % 1) + 1) % 1 * H;
+            const pulse = 0.65 + 0.35 * Math.sin(t * 1.4 + b.phase);
+            const r = b.r * uScale;
+
+            const g = ctx.createRadialGradient(sx, sy, r * 0.1, sx, sy, r);
+            g.addColorStop(0, b.alt ? th.bokehB : th.bokehA);
+            g.addColorStop(0.7, b.alt ? th.bokehB : th.bokehA);
+            g.addColorStop(1, 'rgba(0, 0, 0, 0)');
+            ctx.globalAlpha = pulse;
+            ctx.fillStyle = g;
+            ctx.beginPath();
+            ctx.arc(sx, sy, r, 0, Math.PI * 2);
+            ctx.fill();
+          }
+
+          // Subtle diamond glints
+          for (let i = 0; i < 22; i++) {
+            const s = STARS[i];
+            const sx = s.nx * W;
+            const sy = (((s.ny - t * s.speed * 0.7) % 1) + 1) % 1 * H;
+            const twinkle = 0.2 + 0.8 * (0.5 + 0.5 * Math.sin(t * s.twinkleFreq + s.phase));
+            const arm = (2.5 + s.r) * uScale;
+            ctx.globalAlpha = twinkle * 0.75;
+            ctx.strokeStyle = 'rgba(254, 243, 199, 0.85)';
+            ctx.lineWidth = Math.max(0.7, 0.9 * uScale);
             ctx.beginPath();
             ctx.moveTo(sx - arm, sy);
             ctx.lineTo(sx + arm, sy);
             ctx.moveTo(sx, sy - arm);
             ctx.lineTo(sx, sy + arm);
-            ctx.strokeStyle = s.isGold ? 'rgba(255, 227, 148, 0.9)' : 'rgba(226, 232, 240, 0.8)';
-            ctx.lineWidth = Math.max(0.7, 0.9 * uScale);
             ctx.stroke();
-          } else {
+          }
+          ctx.restore();
+          return;
+        }
+
+        // EFFECT 5: SWEEPING STUDIO SPOTLIGHT BEAMS & FINE DUST
+        if (eff === 'beams') {
+          ctx.save();
+          const drawBeam = (originX, baseAngle, swingAmp, speed, spread, color) => {
+            const angle = baseAngle + Math.sin(t * speed) * swingAmp;
+            const len = Math.max(W, H) * 1.35;
+            const x1 = originX + Math.sin(angle - spread) * len;
+            const y1 = Math.cos(angle - spread) * len;
+            const x2 = originX + Math.sin(angle + spread) * len;
+            const y2 = Math.cos(angle + spread) * len;
+
+            const grad = ctx.createLinearGradient(originX, -20, (x1 + x2) / 2, H);
+            grad.addColorStop(0, color);
+            grad.addColorStop(0.7, 'rgba(255, 255, 255, 0.02)');
+            grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+
+            ctx.fillStyle = grad;
             ctx.beginPath();
-            ctx.arc(sx, sy, radPx, 0, Math.PI * 2);
+            ctx.moveTo(originX, -20);
+            ctx.lineTo(x1, y1);
+            ctx.lineTo(x2, y2);
+            ctx.closePath();
+            ctx.fill();
+          };
+
+          drawBeam(W * 0.15, 0.22, 0.25, 0.55, 0.15, 'rgba(254, 240, 138, 0.14)');
+          drawBeam(W * 0.85, -0.22, 0.25, 0.45, 0.15, 'rgba(226, 232, 240, 0.12)');
+
+          // Fine floating studio dust
+          for (let i = 0; i < 40; i++) {
+            const s = STARS[i];
+            const sx = s.nx * W;
+            const sy = (((s.ny - t * s.speed * 0.6) % 1) + 1) % 1 * H;
+            const alpha = 0.15 + 0.55 * (0.5 + 0.5 * Math.sin(t * 2.0 + s.phase));
+            ctx.globalAlpha = alpha;
+            ctx.fillStyle = s.isGold ? '#fde68a' : '#e4e4e7';
+            ctx.beginPath();
+            ctx.arc(sx, sy, Math.max(0.7, s.r * 0.7 * uScale), 0, Math.PI * 2);
             ctx.fill();
           }
+          ctx.restore();
         }
-        ctx.restore();
       }
 
+      /* =========================================================================
+       * 10. 5 FRAME STYLES (CLASSIC, NEON, ARTDECO, MINIMAL, NONE)
+       * ========================================================================= */
       function roundedRectPath(ctx, x, y, w, h, r) {
         const radius = Math.min(r, w / 2, h / 2);
         ctx.beginPath();
@@ -1560,71 +2182,285 @@
         ctx.closePath();
       }
 
-      function drawGoldenFrame(ctx, t, W, H, uScale) {
+      function drawFrame(ctx, t, W, H, uScale) {
+        const style = state.fx.frameStyle || 'classic';
+        if (style === 'none') return;
+
+        const th = THEMES[state.fx.theme] || THEMES.royal;
         const pad = Math.max(6, Math.round(10 * uScale));
         const innerPad = pad + Math.max(3, Math.round(4.5 * uScale));
-        const rOuter = Math.max(8, 14 * uScale);
-        const rInner = Math.max(5, 10 * uScale);
-
         const fw = W - pad * 2;
         const fh = H - pad * 2;
 
         ctx.save();
 
-        const goldGrad = ctx.createLinearGradient(0, 0, W, H);
-        goldGrad.addColorStop(0.0, '#b87414');
-        goldGrad.addColorStop(0.25, '#ffe38f');
-        goldGrad.addColorStop(0.5, '#f5b01e');
-        goldGrad.addColorStop(0.75, '#fff3bf');
-        goldGrad.addColorStop(1.0, '#a6620b');
+        // STYLE 1: CLASSIC DOUBLE GOLDEN FRAME + 2 ORBITING LIGHT ORBS
+        if (style === 'classic') {
+          const rOuter = Math.max(8, 14 * uScale);
+          const rInner = Math.max(5, 10 * uScale);
 
-        roundedRectPath(ctx, pad, pad, fw, fh, rOuter);
-        ctx.strokeStyle = goldGrad;
-        ctx.lineWidth = Math.max(1.8, 2.5 * uScale);
-        ctx.stroke();
+          const goldGrad = ctx.createLinearGradient(0, 0, W, H);
+          goldGrad.addColorStop(0.0, th.frameDark);
+          goldGrad.addColorStop(0.25, th.frameLight);
+          goldGrad.addColorStop(0.5, th.frameMid);
+          goldGrad.addColorStop(0.75, th.frameLight);
+          goldGrad.addColorStop(1.0, th.frameDark);
 
-        roundedRectPath(ctx, innerPad, innerPad, W - innerPad * 2, H - innerPad * 2, rInner);
-        ctx.strokeStyle = 'rgba(255, 224, 130, 0.35)';
-        ctx.lineWidth = Math.max(0.8, 1.1 * uScale);
-        ctx.stroke();
+          roundedRectPath(ctx, pad, pad, fw, fh, rOuter);
+          ctx.strokeStyle = goldGrad;
+          ctx.lineWidth = Math.max(1.8, 2.5 * uScale);
+          ctx.stroke();
 
-        // Traveling golden light glints along the perimeter
-        const perimeter = 2 * (fw + fh);
-        const drawOrb = (phaseOffset) => {
-          const dist = ((((t * 0.14 + phaseOffset) % 1) + 1) % 1) * perimeter;
-          let ox = pad;
-          let oy = pad;
-          if (dist < fw) {
-            ox = pad + dist;
-            oy = pad;
-          } else if (dist < fw + fh) {
-            ox = pad + fw;
-            oy = pad + (dist - fw);
-          } else if (dist < 2 * fw + fh) {
-            ox = pad + fw - (dist - (fw + fh));
-            oy = pad + fh;
-          } else {
-            ox = pad;
-            oy = pad + fh - (dist - (2 * fw + fh));
-          }
+          roundedRectPath(ctx, innerPad, innerPad, W - innerPad * 2, H - innerPad * 2, rInner);
+          ctx.strokeStyle = 'rgba(255, 232, 160, 0.34)';
+          ctx.lineWidth = Math.max(0.8, 1.1 * uScale);
+          ctx.stroke();
 
-          const orbR = Math.max(14, 28 * uScale);
-          const orbGrad = ctx.createRadialGradient(ox, oy, 0, ox, oy, orbR);
-          orbGrad.addColorStop(0, 'rgba(255, 255, 235, 1)');
-          orbGrad.addColorStop(0.3, 'rgba(255, 215, 95, 0.72)');
-          orbGrad.addColorStop(1, 'rgba(245, 184, 46, 0)');
-          ctx.fillStyle = orbGrad;
+          const perimeter = 2 * (fw + fh);
+          const drawOrb = (phaseOffset) => {
+            const dist = ((((t * 0.14 + phaseOffset) % 1) + 1) % 1) * perimeter;
+            let ox = pad;
+            let oy = pad;
+            if (dist < fw) {
+              ox = pad + dist;
+              oy = pad;
+            } else if (dist < fw + fh) {
+              ox = pad + fw;
+              oy = pad + (dist - fw);
+            } else if (dist < 2 * fw + fh) {
+              ox = pad + fw - (dist - (fw + fh));
+              oy = pad + fh;
+            } else {
+              ox = pad;
+              oy = pad + fh - (dist - (2 * fw + fh));
+            }
+
+            const orbR = Math.max(14, 28 * uScale);
+            const orbGrad = ctx.createRadialGradient(ox, oy, 0, ox, oy, orbR);
+            orbGrad.addColorStop(0, 'rgba(255, 255, 240, 1)');
+            orbGrad.addColorStop(0.32, th.frameOrb);
+            orbGrad.addColorStop(1, 'rgba(245, 184, 46, 0)');
+            ctx.fillStyle = orbGrad;
+            ctx.beginPath();
+            ctx.arc(ox, oy, orbR, 0, Math.PI * 2);
+            ctx.fill();
+          };
+
+          drawOrb(0);
+          drawOrb(0.5);
+          ctx.restore();
+          return;
+        }
+
+        // STYLE 2: CYBER NEON CORNER BRACKETS + PULSING SCANLINE
+        if (style === 'neon') {
+          const neon = th.neonColor;
+          const alt = th.neonAlt;
+
+          // Thin inner rail
+          ctx.strokeStyle = neon;
+          ctx.globalAlpha = 0.35;
+          ctx.lineWidth = Math.max(1, 1.2 * uScale);
+          ctx.strokeRect(innerPad, innerPad, W - innerPad * 2, H - innerPad * 2);
+
+          // Glowing heavy corner brackets
+          const arm = Math.max(22, 36 * uScale);
+          ctx.globalAlpha = 1;
+          ctx.strokeStyle = neon;
+          ctx.lineWidth = Math.max(2.4, 3.2 * uScale);
+          ctx.shadowColor = neon;
+          ctx.shadowBlur = 14 * uScale;
+
+          const corners = [
+            [pad, pad, 1, 1],
+            [W - pad, pad, -1, 1],
+            [W - pad, H - pad, -1, -1],
+            [pad, H - pad, 1, -1],
+          ];
+          corners.forEach(([cx, cy, dx, dy]) => {
+            ctx.beginPath();
+            ctx.moveTo(cx + dx * arm, cy);
+            ctx.lineTo(cx, cy);
+            ctx.lineTo(cx, cy + dy * arm);
+            ctx.stroke();
+          });
+
+          // Pulsing neon scanline traveling vertically
+          const scanY = pad + (((t * 0.25) % 1) * fh);
+          const scanGrad = ctx.createLinearGradient(pad, scanY, W - pad, scanY);
+          scanGrad.addColorStop(0, 'rgba(34, 211, 238, 0)');
+          scanGrad.addColorStop(0.5, alt);
+          scanGrad.addColorStop(1, 'rgba(34, 211, 238, 0)');
+          ctx.shadowBlur = 10 * uScale;
+          ctx.shadowColor = alt;
+          ctx.strokeStyle = scanGrad;
+          ctx.globalAlpha = 0.55;
+          ctx.lineWidth = Math.max(1.2, 1.8 * uScale);
           ctx.beginPath();
-          ctx.arc(ox, oy, orbR, 0, Math.PI * 2);
-          ctx.fill();
-        };
+          ctx.moveTo(pad, scanY);
+          ctx.lineTo(W - pad, scanY);
+          ctx.stroke();
 
-        drawOrb(0);
-        drawOrb(0.5);
+          ctx.restore();
+          return;
+        }
+
+        // STYLE 3: ART-DECO VIP DOUBLE FRAME WITH DIAMOND CORNER ORNAMENTS
+        if (style === 'artdeco') {
+          const goldGrad = ctx.createLinearGradient(0, 0, W, H);
+          goldGrad.addColorStop(0, th.frameDark);
+          goldGrad.addColorStop(0.5, th.frameLight);
+          goldGrad.addColorStop(1, th.frameDark);
+
+          ctx.strokeStyle = goldGrad;
+          ctx.lineWidth = Math.max(1.6, 2.2 * uScale);
+          ctx.strokeRect(pad, pad, fw, fh);
+
+          ctx.lineWidth = Math.max(0.9, 1.2 * uScale);
+          ctx.globalAlpha = 0.65;
+          ctx.strokeRect(innerPad + 2 * uScale, innerPad + 2 * uScale, W - (innerPad + 2 * uScale) * 2, H - (innerPad + 2 * uScale) * 2);
+
+          // Geometric diamond corner ornaments
+          const d = Math.max(7, 10 * uScale);
+          const inset = pad + d * 0.8;
+          ctx.globalAlpha = 1;
+          ctx.fillStyle = th.frameLight;
+          ctx.strokeStyle = th.frameMid;
+          ctx.lineWidth = Math.max(1, 1.4 * uScale);
+
+          const pts = [
+            [inset, inset],
+            [W - inset, inset],
+            [W - inset, H - inset],
+            [inset, H - inset],
+          ];
+          pts.forEach(([cx, cy]) => {
+            ctx.beginPath();
+            ctx.moveTo(cx, cy - d);
+            ctx.lineTo(cx + d, cy);
+            ctx.lineTo(cx, cy + d);
+            ctx.lineTo(cx - d, cy);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+          });
+
+          ctx.restore();
+          return;
+        }
+
+        // STYLE 4: MINIMALIST THIN METALLIC BORDER + CORNER TICKS
+        if (style === 'minimal') {
+          ctx.strokeStyle = 'rgba(255, 255, 255, 0.22)';
+          ctx.lineWidth = Math.max(1, 1.2 * uScale);
+          ctx.strokeRect(pad, pad, fw, fh);
+
+          const tick = Math.max(10, 16 * uScale);
+          ctx.strokeStyle = th.frameLight;
+          ctx.lineWidth = Math.max(1.8, 2.2 * uScale);
+          const corners = [
+            [pad, pad, 1, 1],
+            [W - pad, pad, -1, 1],
+            [W - pad, H - pad, -1, -1],
+            [pad, H - pad, 1, -1],
+          ];
+          corners.forEach(([cx, cy, dx, dy]) => {
+            ctx.beginPath();
+            ctx.moveTo(cx + dx * tick, cy);
+            ctx.lineTo(cx, cy);
+            ctx.lineTo(cx, cy + dy * tick);
+            ctx.stroke();
+          });
+          ctx.restore();
+        }
+      }
+
+      /* =========================================================================
+       * 11. 4 FUEL CARD STYLES (GLASS, NEON, MINIMAL, SOLID)
+       * ========================================================================= */
+      function drawFuelCard(ctx, leftX, rightX, cy, contentW, cardH, cardRadius, appearP, uScale) {
+        const th = THEMES[state.fx.theme] || THEMES.royal;
+        const cStyle = state.fx.cardStyle || 'glass';
+
+        ctx.save();
+        ctx.globalAlpha = appearP;
+
+        if (cStyle === 'glass') {
+          roundedRectPath(ctx, leftX, cy - cardH / 2, contentW, cardH, cardRadius);
+          ctx.fillStyle = th.cardBg;
+          ctx.fill();
+
+          const borderGrad = ctx.createLinearGradient(leftX, cy, rightX, cy);
+          borderGrad.addColorStop(0, th.cardAccent);
+          borderGrad.addColorStop(0.5, th.cardBorder);
+          borderGrad.addColorStop(1, th.frameLight);
+          ctx.strokeStyle = borderGrad;
+          ctx.lineWidth = Math.max(1, 1.3 * uScale);
+          ctx.stroke();
+
+          // Left accent bar
+          const barH = cardH * 0.54;
+          roundedRectPath(ctx, leftX + 4 * uScale, cy - barH / 2, 3.2 * uScale, barH, 2 * uScale);
+          ctx.fillStyle = th.cardAccent;
+          ctx.fill();
+        } else if (cStyle === 'neon') {
+          const cut = Math.max(7, 11 * uScale);
+          const top = cy - cardH / 2;
+          const bot = cy + cardH / 2;
+
+          ctx.beginPath();
+          ctx.moveTo(leftX + cut, top);
+          ctx.lineTo(rightX, top);
+          ctx.lineTo(rightX, bot - cut);
+          ctx.lineTo(rightX - cut, bot);
+          ctx.lineTo(leftX, bot);
+          ctx.lineTo(leftX, top + cut);
+          ctx.closePath();
+
+          ctx.fillStyle = 'rgba(6, 10, 26, 0.80)';
+          ctx.fill();
+
+          ctx.shadowColor = th.neonColor;
+          ctx.shadowBlur = 10 * uScale;
+          ctx.strokeStyle = th.neonColor;
+          ctx.lineWidth = Math.max(1.2, 1.6 * uScale);
+          ctx.stroke();
+
+          // Left glowing vertical pip
+          ctx.fillStyle = th.neonAlt;
+          ctx.fillRect(leftX + 5 * uScale, cy - cardH * 0.25, 3 * uScale, cardH * 0.5);
+        } else if (cStyle === 'minimal') {
+          // Subtle matte backdrop + crisp bottom gradient divider
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.035)';
+          roundedRectPath(ctx, leftX, cy - cardH / 2, contentW, cardH, Math.max(4, 6 * uScale));
+          ctx.fill();
+
+          const divGrad = ctx.createLinearGradient(leftX, cy, rightX, cy);
+          divGrad.addColorStop(0, 'rgba(255, 255, 255, 0.08)');
+          divGrad.addColorStop(0.5, th.cardAccent);
+          divGrad.addColorStop(1, 'rgba(255, 255, 255, 0.08)');
+          ctx.strokeStyle = divGrad;
+          ctx.lineWidth = Math.max(1, 1.3 * uScale);
+          ctx.beginPath();
+          ctx.moveTo(leftX + 4 * uScale, cy + cardH / 2);
+          ctx.lineTo(rightX - 4 * uScale, cy + cardH / 2);
+          ctx.stroke();
+        } else {
+          // 'solid' — High-contrast deep matte black card
+          roundedRectPath(ctx, leftX, cy - cardH / 2, contentW, cardH, cardRadius);
+          ctx.fillStyle = 'rgba(6, 6, 10, 0.92)';
+          ctx.fill();
+          ctx.strokeStyle = 'rgba(255, 255, 255, 0.16)';
+          ctx.lineWidth = Math.max(1, 1.2 * uScale);
+          ctx.stroke();
+        }
 
         ctx.restore();
       }
 
+      /* =========================================================================
+       * 12. 3D VECTOR / CUSTOM PNG LOGO RENDERER
+       * ========================================================================= */
       function getLogoRenderedHeight(scaleFactor) {
         if (customLogoImg && customLogoImg.complete && customLogoImg.naturalWidth > 0) {
           const maxBox = 122;
@@ -1732,7 +2568,6 @@
           ctx.fillStyle = dropGrad;
           ctx.fill();
 
-          // Specular Crescent Highlight inside Drop
           ctx.beginPath();
           ctx.arc(-6, 14, 11, Math.PI * 0.72, Math.PI * 1.25);
           ctx.strokeStyle = 'rgba(255, 255, 255, 0.78)';
@@ -1745,13 +2580,14 @@
       }
 
       /* =========================================================================
-       * 10. MAIN 20-SECOND CHOREOGRAPHY
+       * 13. MAIN 20-SECOND CHOREOGRAPHY
        * ========================================================================= */
       function renderFrame(t) {
         const W = state.resolution.width;
         const H = state.resolution.height;
         const ss = getSupersampleFactor();
         const uScale = Math.min(W / 400, H / 880);
+        const th = THEMES[state.fx.theme] || THEMES.royal;
 
         const framePad = Math.max(6, Math.round(10 * uScale));
         const safeTextMaxW = Math.max(90, W - framePad * 2 - 34 * uScale);
@@ -1774,8 +2610,8 @@
         ctx.save();
         ctx.setTransform(ss, 0, 0, ss, 0, 0);
 
-        drawBackground(ctx, t, W, H, uScale);
-        drawGoldenFrame(ctx, t, W, H, uScale);
+        drawBackgroundAndParticles(ctx, t, W, H, uScale);
+        drawFrame(ctx, t, W, H, uScale);
 
         // ---------------------------------------------------------------------
         // SCENE 1: INTRO (0.0s – 4.5s)
@@ -1849,7 +2685,7 @@
               ...titleOpts,
               _layout: titleLayout,
               align: 'center',
-              theme: 'gold',
+              role: 'primary',
               alpha: easeOutCubic(titleP) * introFadeOut,
               scale: popScale,
               shineCycle: shine > 0 && shine < 1 ? shine : -1,
@@ -1865,11 +2701,11 @@
             ctx.globalAlpha = divP * introFadeOut;
             const lg = ctx.createLinearGradient(W / 2 - span, dividerY, W / 2 + span, dividerY);
             lg.addColorStop(0, 'rgba(245, 184, 46, 0)');
-            lg.addColorStop(0.5, 'rgba(255, 236, 158, 0.98)');
+            lg.addColorStop(0.5, th.dividerColor);
             lg.addColorStop(1, 'rgba(245, 184, 46, 0)');
             ctx.strokeStyle = lg;
             ctx.lineWidth = Math.max(1.4, 2.2 * uScale);
-            ctx.shadowColor = 'rgba(255, 210, 80, 0.8)';
+            ctx.shadowColor = th.dividerGlow;
             ctx.shadowBlur = 10 * uScale;
             ctx.beginPath();
             ctx.moveTo(W / 2 - span, dividerY);
@@ -1886,7 +2722,7 @@
               ...subOpts,
               _layout: subLayout,
               align: 'center',
-              theme: 'silver',
+              role: 'secondary',
               depth: state.fx.depth * 0.55 * uScale,
               alpha: subP * introFadeOut,
             });
@@ -1948,7 +2784,7 @@
                 ...brandTitleOpts,
                 _layout: bTitleLayout,
                 align: 'center',
-                theme: 'gold',
+                role: 'primary',
                 alpha: easeOutCubic(brandIn) * brandFadeOut,
                 scale: 0.86 + 0.14 * easeOutBack(brandIn),
                 shineCycle: bShine > 0 && bShine < 1 ? bShine : -1,
@@ -1963,7 +2799,7 @@
                 ...brandSubOpts,
                 _layout: bSubLayout,
                 align: 'center',
-                theme: 'silver',
+                role: 'secondary',
                 depth: state.fx.depth * 0.5 * uScale,
                 alpha: brandSubIn * brandFadeOut,
               });
@@ -1975,8 +2811,6 @@
         // SCENE 3: PRICE BOARD (9.0s – 20.0s)
         // ---------------------------------------------------------------------
         if (t >= 8.75) {
-          const th = THEMES[state.fx.theme] || THEMES.royal;
-
           const headerP = progress(t, 8.95, 9.6);
           if (headerP > 0) {
             const headerEase = easeOutCubic(headerP);
@@ -1986,7 +2820,7 @@
               baseSize: 26 * uScale,
               weight: 900,
               align: 'center',
-              theme: 'gold',
+              role: 'primary',
               alpha: headerEase,
               scale: 0.9 + 0.1 * headerEase,
               shineCycle: hCycle >= 0 && hCycle <= 1 ? hCycle : -1,
@@ -2022,25 +2856,7 @@
               const slideY = (1 - appearP) * 16 * uScale;
               const cy = y + slideY;
 
-              ctx.save();
-              ctx.globalAlpha = appearP;
-              roundedRectPath(ctx, leftX, cy - cardH / 2, contentW, cardH, cardRadius);
-              ctx.fillStyle = th.cardBg;
-              ctx.fill();
-
-              const borderGrad = ctx.createLinearGradient(leftX, cy, rightX, cy);
-              borderGrad.addColorStop(0, 'rgba(245, 184, 46, 0.55)');
-              borderGrad.addColorStop(0.5, th.cardBorder);
-              borderGrad.addColorStop(1, 'rgba(255, 224, 130, 0.65)');
-              ctx.strokeStyle = borderGrad;
-              ctx.lineWidth = Math.max(1, 1.3 * uScale);
-              ctx.stroke();
-
-              const barH = cardH * 0.54;
-              roundedRectPath(ctx, leftX + 4 * uScale, cy - barH / 2, 3.2 * uScale, barH, 2 * uScale);
-              ctx.fillStyle = '#f5b82e';
-              ctx.fill();
-              ctx.restore();
+              drawFuelCard(ctx, leftX, rightX, cy, contentW, cardH, cardRadius, appearP, uScale);
 
               const rollP = easeOutCubic(progress(t, rowStart, rowStart + 0.95));
               const targetPrice = Math.max(0, Number(fuel.price) || 0);
@@ -2065,7 +2881,7 @@
                 baseSize: defaultLabelPx,
                 weight: 800,
                 align: 'left',
-                theme: 'silver',
+                role: 'secondary',
                 depth: Math.min(5, state.fx.depth * 0.75) * uScale,
                 alpha: appearP,
                 shineCycle: labelShine,
@@ -2076,7 +2892,7 @@
                 baseSize: defaultPricePx,
                 weight: 900,
                 align: 'right',
-                theme: 'gold',
+                role: 'primary',
                 depth: state.fx.depth * uScale,
                 alpha: appearP,
                 shineCycle: priceShine,
@@ -2091,7 +2907,7 @@
               baseSize: 16 * uScale,
               weight: 700,
               align: 'center',
-              theme: 'silver',
+              role: 'secondary',
               depth: Math.min(2, state.fx.depth) * uScale,
               alpha: footerP * 0.92,
             });
@@ -2107,7 +2923,7 @@
       }
 
       /* =========================================================================
-       * 11. LOGO LOADING (IndexedDB -> ./logo.png -> Built-in Vector Emblem)
+       * 14. LOGO LOADING (IndexedDB -> ./logo.png -> Built-in Vector Emblem)
        * ========================================================================= */
       function setLogoPreviewThumbnail(src, showRemoveBtn) {
         if (src) {
@@ -2128,7 +2944,6 @@
       function applyLogoImage(dataUrl, allowRepoFallback = true) {
         if (dataUrl) {
           currentLogoDataUrl = dataUrl;
-          isUsingStaticRepoLogo = false;
           const img = new Image();
           img.onload = () => {
             customLogoImg = img;
@@ -2146,7 +2961,6 @@
 
         currentLogoDataUrl = null;
         customLogoImg = null;
-        isUsingStaticRepoLogo = false;
         setLogoPreviewThumbnail(null, false);
 
         if (allowRepoFallback) {
@@ -2155,13 +2969,11 @@
           repoImg.onload = () => {
             if (!currentLogoDataUrl) {
               customLogoImg = repoImg;
-              isUsingStaticRepoLogo = true;
               setLogoPreviewThumbnail('./logo.png', false);
               renderFrame(currentTime);
             }
           };
           repoImg.onerror = () => {
-            // Gracefully fall back to built-in 3D gold shield emblem
             renderFrame(currentTime);
           };
           repoImg.src = './logo.png';
@@ -2171,7 +2983,7 @@
       }
 
       /* =========================================================================
-       * 12. UI BUILDERS & EVENT BINDINGS
+       * 15. UI BUILDERS & EVENT BINDINGS
        * ========================================================================= */
       function renderFuelListUI() {
         fuelListContainer.innerHTML = '';
@@ -2271,12 +3083,16 @@
         priceHeaderInput.value = state.texts.priceHeader;
         footerUnitInput.value = state.texts.footerUnit;
 
-        depthRange.value = state.fx.depth;
-        depthVal.textContent = `${state.fx.depth} px`;
-        shineEnabledCheckbox.checked = !!state.fx.shineEnabled;
-        glowRange.value = state.fx.glow;
-        glowVal.textContent = `${state.fx.glow}%`;
-        supersampleCheckbox.checked = !!state.fx.supersample;
+        // Design Templates & Mix-and-Match Controls
+        templateBtns.forEach((btn) => {
+          const active = btn.dataset.template === state.fx.template;
+          btn.classList.toggle('border-amber-400', active);
+          btn.classList.toggle('bg-amber-500/15', active);
+          btn.classList.toggle('border-studio-border', !active);
+          btn.classList.toggle('bg-slate-950/75', !active);
+          const badge = btn.querySelector('.template-check');
+          if (badge) badge.classList.toggle('hidden', !active);
+        });
 
         themeBtns.forEach((btn) => {
           const active = btn.dataset.theme === state.fx.theme;
@@ -2285,6 +3101,18 @@
           btn.classList.toggle('border-studio-border', !active);
           btn.classList.toggle('bg-slate-950/70', !active);
         });
+
+        particleEffectSelect.value = state.fx.particleEffect;
+        frameStyleSelect.value = state.fx.frameStyle;
+        textPaletteSelect.value = state.fx.textPalette;
+        cardStyleSelect.value = state.fx.cardStyle;
+
+        depthRange.value = state.fx.depth;
+        depthVal.textContent = `${state.fx.depth} px`;
+        shineEnabledCheckbox.checked = !!state.fx.shineEnabled;
+        glowRange.value = state.fx.glow;
+        glowVal.textContent = `${state.fx.glow}%`;
+        supersampleCheckbox.checked = !!state.fx.supersample;
 
         fpsBtns.forEach((btn) => {
           const active = Number(btn.dataset.fps) === Number(state.fx.fps);
@@ -2441,7 +3269,55 @@
         showToast("Yuklangan logotip o'chirildi");
       });
 
-      // 3D & Design Controls
+      // 5 One-Click Design Templates
+      templateBtns.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const tplKey = btn.dataset.template;
+          const tpl = DESIGN_TEMPLATES[tplKey];
+          if (!tpl) return;
+
+          state.fx.template = tplKey;
+          state.fx.theme = tpl.theme;
+          state.fx.particleEffect = tpl.particleEffect;
+          state.fx.frameStyle = tpl.frameStyle;
+          state.fx.textPalette = tpl.textPalette;
+          state.fx.cardStyle = tpl.cardStyle;
+          state.fx.depth = tpl.depth;
+          state.fx.glow = tpl.glow;
+
+          saveState();
+          syncAllControlsFromState();
+          renderFrame(currentTime);
+          showToast(`Dizayn: ${tpl.label}`);
+        });
+      });
+
+      // Fine-Grained Mix & Match Listeners
+      themeBtns.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          state.fx.template = 'custom';
+          state.fx.theme = btn.dataset.theme;
+          saveState();
+          syncAllControlsFromState();
+          renderFrame(currentTime);
+        });
+      });
+
+      [
+        [particleEffectSelect, 'particleEffect'],
+        [frameStyleSelect, 'frameStyle'],
+        [textPaletteSelect, 'textPalette'],
+        [cardStyleSelect, 'cardStyle'],
+      ].forEach(([sel, key]) => {
+        sel.addEventListener('change', () => {
+          state.fx.template = 'custom';
+          state.fx[key] = sel.value;
+          saveState();
+          syncAllControlsFromState();
+          renderFrame(currentTime);
+        });
+      });
+
       depthRange.addEventListener('input', () => {
         state.fx.depth = Number(depthRange.value);
         depthVal.textContent = `${state.fx.depth} px`;
@@ -2460,15 +3336,6 @@
         glowVal.textContent = `${state.fx.glow}%`;
         saveState();
         renderFrame(currentTime);
-      });
-
-      themeBtns.forEach((btn) => {
-        btn.addEventListener('click', () => {
-          state.fx.theme = btn.dataset.theme;
-          saveState();
-          syncAllControlsFromState();
-          renderFrame(currentTime);
-        });
       });
 
       fpsBtns.forEach((btn) => {
@@ -2490,7 +3357,7 @@
       exportJsonBtn.addEventListener('click', () => {
         try {
           const payload = {
-            version: 6,
+            version: 7,
             exportedAt: new Date().toISOString(),
             state: deepClone(state),
             logoDataUrl: currentLogoDataUrl || null,
@@ -2539,9 +3406,9 @@
       });
 
       /* =========================================================================
-       * 13. PLAYBACK LOOP & TIMELINE SCRUBBING
+       * 16. PLAYBACK LOOP & TIMELINE SCRUBBING
        * ========================================================================= */
-      let currentTime = 2.2;
+      let currentTime = 13.8; // Start on Prices so users immediately see the full design & cards
       let isPlaying = true;
       let lastRafTs = null;
       let isRecording = false;
@@ -2605,7 +3472,7 @@
       }
 
       /* =========================================================================
-       * 14. REAL-TIME VIDEO EXPORT (MP4 / WEBM via MediaRecorder @ 14 Mbps)
+       * 17. REAL-TIME VIDEO EXPORT (MP4 / WEBM via MediaRecorder @ 14 Mbps)
        * ========================================================================= */
       function pickSupportedMimeType() {
         const candidates = [
@@ -2746,7 +3613,7 @@
       });
 
       /* =========================================================================
-       * 15. INITIALIZATION
+       * 18. INITIALIZATION
        * ========================================================================= */
       window.addEventListener('resize', () => {
         syncCanvasDimensions();
@@ -2758,7 +3625,6 @@
         updateScrubberUI();
         renderFrame(currentTime);
 
-        // Load persisted logo from IndexedDB, or fall back to GitHub Pages ./logo.png
         const savedLogo = await loadLogoFromIDB();
         applyLogoImage(savedLogo, true);
 
